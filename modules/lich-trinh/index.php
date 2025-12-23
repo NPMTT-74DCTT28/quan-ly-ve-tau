@@ -169,14 +169,14 @@ $data_search = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
-                        <th>STT</th><th>ID</th><th>Mã</th><th>Tàu</th><th>Tuyến</th>
+                        <th>ID</th><th>Mã</th><th>Tàu</th><th>Tuyến</th>
                         <th>Ngày đi</th><th>Ngày đến</th><th>Trạng thái</th><th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php if ($data_search): $i=1; foreach ($data_search as $row): ?>
                     <tr>
-                        <td><?= $i++ ?></td>
+                        
                         <td><?= $row['id'] ?></td>
                         <td><?= htmlspecialchars($row['ma_lich_trinh']) ?></td>
                         <td><?= htmlspecialchars($row['ma_tau'].' - '.$row['ten_tau']) ?></td>

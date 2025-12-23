@@ -147,7 +147,6 @@ $data_search = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>STT</th>
                             <th>Mã toa</th>
                             <th>Thuộc tàu</th>
                             <th>Loại toa</th>
@@ -158,7 +157,6 @@ $data_search = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php if ($data_search): $i = 1;
                             foreach ($data_search as $row): ?>
                                 <tr>
-                                    <td><?= $i++ ?></td>
                                     <td><?= htmlspecialchars($row['ma_toa']) ?></td>
                                     <td><?= htmlspecialchars($row['ma_tau'] . ' - ' . $row['ten_tau']) ?></td>
                                     <td>
