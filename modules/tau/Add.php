@@ -7,6 +7,8 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+requireAdmin();
+
 $conn = $db->getConnection();
 
 $ma_tau = $ten_tau = '';

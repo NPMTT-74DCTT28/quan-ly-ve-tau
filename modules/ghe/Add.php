@@ -7,6 +7,8 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+requireAdmin();
+
 $conn = $db->getConnection();
 
 $toa_list = $conn->query("SELECT id, ma_toa FROM toa_tau")->fetchAll();

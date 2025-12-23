@@ -7,6 +7,8 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+requireAdmin();
+
 $conn = $db->getConnection();
 
 $ma_tau = isset($_POST['ma_tau']) ? trim($_POST['ma_tau']) : '';

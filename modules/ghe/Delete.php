@@ -6,6 +6,8 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+requireAdmin();
+
 $conn = $db->getConnection();
 
 if (isset($_GET['id'])) {

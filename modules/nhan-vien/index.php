@@ -6,6 +6,8 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+requireAdmin();
+
 $conn = $db->getConnection();
 
 $keyword = $_GET['keyword'] ?? '';
