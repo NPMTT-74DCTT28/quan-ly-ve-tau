@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo SITE_NAME ?></title>
-    <link rel="stylesheet" href="<?php echo BASE_URL ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL ?>assets/css/layout.css">
 </head>
 
 <body>
@@ -23,7 +23,17 @@
                     <li><a href="<?php echo BASE_URL ?>modules/lich-trinh/">Lịch trình</a></li>
                     <li><a href="<?php echo BASE_URL ?>modules/khach-hang/">Khách hàng</a></li>
                     <li><a href="<?php echo BASE_URL ?>modules/ve-tau/">Vé tàu</a></li>
-                    <li><a href="<?php echo BASE_URL ?>modules/auth/dang_nhap.php">Đăng nhập</a></li>
+                    <?php if (isset($_SESSION['user'])): ?>
+                        <li>
+                            <a href="<?php echo BASE_URL ?>modules/auth/dang_xuat.php"
+                                onclick="return confirm('Bạn có chắc chắn muốn đăng xuất không?');"
+                                style="color: #dc3545; font-weight: bold;">
+                                Đăng xuất
+                            </a>
+                        </li>
+                    <?php else: ?>
+                        <li><a href="<?php echo BASE_URL ?>modules/auth/dang_nhap.php">Đăng nhập</a></li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </nav>
