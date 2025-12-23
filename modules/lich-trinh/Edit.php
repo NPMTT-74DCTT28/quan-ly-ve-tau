@@ -1,276 +1,217 @@
 <?php
-include_once '../../config/database.php';
-require_once '../../includes/header.php';
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__. '/../../includes/header.php';
 
+$conn = $db->getConnection();
 
-// Lấy danh sách tàu từ database
+/* =========================
+   LẤY DANH SÁCH TÀU
+========================= */
 $sql_tau = "SELECT id, ma_tau, ten_tau FROM tau ORDER BY ma_tau";
-$stmt_tau = $pdo->query($sql_tau);
-$tau_list = $stmt_tau->fetchAll(PDO::FETCH_ASSOC);
+$tau_list = $conn->query($sql_tau)->fetchAll(PDO::FETCH_ASSOC);
 
-// Lấy danh sách tuyến đường từ database
-$sql_tuyen_duong = "SELECT id, ma_tuyen, ten_tuyen FROM tuyen_duong ORDER BY ma_tuyen";
-$stmt_tuyen_duong = $pdo->query($sql_tuyen_duong);
-$tuyen_duong_list = $stmt_tuyen_duong->fetchAll(PDO::FETCH_ASSOC);
+/* =========================
+   LẤY DANH SÁCH TUYẾN ĐƯỜNG
+========================= */
+$sql_tuyen = "SELECT id, ma_tuyen, ten_tuyen FROM tuyen_duong ORDER BY ma_tuyen";
+$tuyen_list = $conn->query($sql_tuyen)->fetchAll(PDO::FETCH_ASSOC);
 
+/* =========================
+   KHAI BÁO BIẾN
+========================= */
 $id = $ma_lich_trinh = $id_tau = $id_tuyen_duong = $ngay_di = $ngay_den = $trang_thai = '';
 $error_message = '';
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-
-    $sql_select = "SELECT * FROM lich_trinh WHERE id = ?";
-    $stmt = $pdo->prepare($sql_select);
-    $stmt->execute([$id]);
-    $row = $stmt->fetch();
-
-    if ($row) {
-        $id = $row['id'];
-        $ma_lich_trinh = $row['ma_lich_trinh'];
-        $id_tau = $row['id_tau'];
-        $id_tuyen_duong = $row['id_tuyen_duong'];
-        $ngay_di = date('Y-m-d\TH:i', strtotime($row['ngay_di']));
-        $ngay_den = date('Y-m-d\TH:i', strtotime($row['ngay_den']));
-        $trang_thai = $row['trang_thai'];
-    } else {
-        echo "<script>alert('Không tìm thấy lịch trình!'); window.location='index.php';</script>";
-    }
-} else {
+/* =========================
+   LẤY DỮ LIỆU THEO ID
+========================= */
+if (!isset($_GET['id'])) {
     echo "<script>alert('Không có ID lịch trình!'); window.location='index.php';</script>";
+    exit;
 }
 
-// Xử lý khi người dùng nhấn nút Lưu
+$id = $_GET['id'];
+
+$sql_select = "SELECT * FROM lich_trinh WHERE id = ?";
+$stmt = $conn->prepare($sql_select);
+$stmt->execute([$id]);
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$row) {
+    echo "<script>alert('Không tìm thấy lịch trình!'); window.location='index.php';</script>";
+    exit;
+}
+
+$ma_lich_trinh = $row['ma_lich_trinh'];
+$id_tau = $row['id_tau'];
+$id_tuyen_duong = $row['id_tuyen_duong'];
+$ngay_di = date('Y-m-d\TH:i', strtotime($row['ngay_di']));
+$ngay_den = date('Y-m-d\TH:i', strtotime($row['ngay_den']));
+$trang_thai = $row['trang_thai'];
+
+/* =========================
+   XỬ LÝ CẬP NHẬT
+========================= */
 if (isset($_POST['btnEdit'])) {
     $id = $_POST['id'];
-    $ma_lich_trinh = $_POST['ma_lich_trinh'];
+    $ma_lich_trinh = trim($_POST['ma_lich_trinh']);
     $id_tau = $_POST['id_tau'];
     $id_tuyen_duong = $_POST['id_tuyen_duong'];
     $ngay_di = $_POST['ngay_di'];
     $ngay_den = $_POST['ngay_den'];
     $trang_thai = $_POST['trang_thai'];
 
-    // Validate ngày đến không được trước ngày đi
+    // 1️⃣ Kiểm tra ngày
     if (strtotime($ngay_den) < strtotime($ngay_di)) {
         $error_message = "Ngày đến không được trước ngày đi!";
     } else {
-        // Cập nhật thông tin lịch trình
-        $sql_update = "UPDATE lich_trinh SET 
-                       ma_lich_trinh = ?, 
-                       id_tau = ?, 
-                       id_tuyen_duong = ?, 
-                       ngay_di = ?, 
-                       ngay_den = ?, 
-                       trang_thai = ? 
-                       WHERE id = ?";
-        $stmt_update = $pdo->prepare($sql_update);
-        if ($stmt_update->execute([$ma_lich_trinh, $id_tau, $id_tuyen_duong, $ngay_di, $ngay_den, $trang_thai, $id])) {
-            echo "<script>alert('Cập nhật thông tin thành công!'); window.location='index.php';</script>";
+
+        // 2️⃣ Kiểm tra trùng mã lịch trình
+        $sql_check = "SELECT COUNT(*) FROM lich_trinh 
+                      WHERE ma_lich_trinh = ? AND id <> ?";
+        $stmt_check = $conn->prepare($sql_check);
+        $stmt_check->execute([$ma_lich_trinh, $id]);
+
+        if ($stmt_check->fetchColumn() > 0) {
+            $error_message = "Mã lịch trình đã tồn tại, vui lòng nhập mã khác!";
         } else {
-            $error_message = "Cập nhật thông tin thất bại!";
+
+            // 3️⃣ Update
+            $sql_update = "UPDATE lich_trinh SET 
+                           ma_lich_trinh = ?, 
+                           id_tau = ?, 
+                           id_tuyen_duong = ?, 
+                           ngay_di = ?, 
+                           ngay_den = ?, 
+                           trang_thai = ?
+                           WHERE id = ?";
+            $stmt_update = $conn->prepare($sql_update);
+
+            if ($stmt_update->execute([
+                $ma_lich_trinh,
+                $id_tau,
+                $id_tuyen_duong,
+                $ngay_di,
+                $ngay_den,
+                $trang_thai,
+                $id
+            ])) {
+                echo "<script>alert('Cập nhật thành công!'); window.location='index.php';</script>";
+                exit;
+            } else {
+                $error_message = "Cập nhật thất bại!";
+            }
         }
     }
 }
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cập nhật lịch trình</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .container {
-            max-width: 800px;
-            margin-top: 50px;
-        }
-        .form-container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        h2 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
-        .form-label {
-            font-weight: 600;
-            color: #34495e;
-        }
-        .btn-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        .btn-custom {
-            min-width: 150px;
-            padding: 10px 25px;
-            font-weight: 600;
-        }
-        .alert {
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .form-control:focus {
-            border-color: #4a90e2;
-            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
-        }
-        .required::after {
-            content: " *";
-            color: #dc3545;
-        }
-        .form-control[readonly] {
-            background-color: #f8f9fa;
-            cursor: not-allowed;
-        }
-        .form-container{
-            background-color: #81aad3ff;
-        }
-    </style>
+    .custom-card {
+        background-color: #81aad3ff; /* màu bạn yêu cầu */
+        border-radius: 15px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+
+    .form-label,
+    h3 {
+        color: #1f3a5a;
+        font-weight: 600;
+    }
+</style>
+
+    <style>
+</style>
+
 </head>
 <body>
-    <div class="container">
-        <div class="form-container">
-            <h2>CẬP NHẬT THÔNG TIN LỊCH TRÌNH</h2>
-            
-            <?php if(isset($error_message)): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <?php echo $error_message; ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
-            
-            <form method="post" action="">
-                <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
-                
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="ma_lich_trinh" class="form-label required">Mã Lịch Trình:</label>
-                            <input type="text" class="form-control" name="ma_lich_trinh" value="<?php echo htmlspecialchars($ma_lich_trinh); ?>" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="id_tau" class="form-label required">Tàu:</label>
-                            <select class="form-control" name="id_tau" required>
-                                <option value="">-- Chọn tàu --</option>
-                                <?php foreach ($tau_list as $tau): ?>
-                                    <option value="<?php echo $tau['id']; ?>" <?php echo $id_tau == $tau['id'] ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($tau['ma_tau'] . ' - ' . $tau['ten_tau']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="id_tuyen_duong" class="form-label required">Tuyến Đường:</label>
-                            <select class="form-control" name="id_tuyen_duong" required>
-                                <option value="">-- Chọn tuyến đường --</option>
-                                <?php foreach ($tuyen_duong_list as $tuyen): ?>
-                                    <option value="<?php echo $tuyen['id']; ?>" <?php echo $id_tuyen_duong == $tuyen['id'] ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($tuyen['ma_tuyen'] . ' - ' . $tuyen['ten_tuyen']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="trang_thai" class="form-label required">Trạng Thái:</label>
-                            <select class="form-control" name="trang_thai" required>
-                                <option value="Chưa chạy" <?php echo $trang_thai == 'Chưa chạy' ? 'selected' : ''; ?>>Chưa chạy</option>
-                                <option value="Đang chạy" <?php echo $trang_thai == 'Đang chạy' ? 'selected' : ''; ?>>Đang chạy</option>
-                                <option value="Đã hoàn thành" <?php echo $trang_thai == 'Đã hoàn thành' ? 'selected' : ''; ?>>Đã hoàn thành</option>
-                                <option value="Hủy" <?php echo $trang_thai == 'Hủy' ? 'selected' : ''; ?>>Hủy</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="ngay_di" class="form-label required">Ngày Giờ Đi:</label>
-                            <input type="datetime-local" class="form-control" name="ngay_di" id="ngay_di" value="<?php echo htmlspecialchars($ngay_di); ?>" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="ngay_den" class="form-label required">Ngày Giờ Đến:</label>
-                            <input type="datetime-local" class="form-control" name="ngay_den" id="ngay_den" value="<?php echo htmlspecialchars($ngay_den); ?>" required>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="btn-container">
-                    <button type="submit" class="btn btn-primary btn-custom" name="btnEdit">
-                        <i class="bi bi-save"></i> Cập nhật
-                    </button>
-                    <a href="index.php" class="btn btn-secondary btn-custom">
-                        <i class="bi bi-arrow-left"></i> Quay lại
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
+<div class="container mt-5">
+    <div class="card custom-card p-4">
 
-    <!-- Thêm Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    
-    <script>
-    // Validate ngày đến không được trước ngày đi
-    document.addEventListener('DOMContentLoaded', function() {
-        const ngayDiInput = document.getElementById('ngay_di');
-        const ngayDenInput = document.getElementById('ngay_den');
-        const form = document.querySelector('form');
-        
-        function validateDates() {
-            const ngayDi = new Date(ngayDiInput.value);
-            const ngayDen = new Date(ngayDenInput.value);
-            
-            if (ngayDen < ngayDi) {
-                alert('Ngày đến không được trước ngày đi!');
-                ngayDenInput.value = '';
-                ngayDenInput.focus();
-                return false;
-            }
-            return true;
-        }
-        
-        // Validate khi thay đổi ngày đến
-        ngayDenInput.addEventListener('change', function() {
-            if (ngayDiInput.value && ngayDenInput.value) {
-                validateDates();
-            }
-        });
-        
-        // Validate khi submit form
-        form.addEventListener('submit', function(e) {
-            if (ngayDiInput.value && ngayDenInput.value) {
-                if (!validateDates()) {
-                    e.preventDefault();
-                    return false;
-                }
-            }
-            return true;
-        });
-        
-        // Set min date cho ngày đến = ngày đi
-        ngayDiInput.addEventListener('change', function() {
-            if (ngayDiInput.value) {
-                ngayDenInput.min = ngayDiInput.value;
-                
-                // Nếu ngày đến đã chọn mà trước ngày đi mới
-                if (ngayDenInput.value && new Date(ngayDenInput.value) < new Date(ngayDiInput.value)) {
-                    ngayDenInput.value = '';
-                    alert('Vui lòng chọn ngày đến sau ngày đi mới!');
-                }
-            }
-        });
-    });
-    </script>
+        <h3 class="text-center mb-4">CẬP NHẬT LỊCH TRÌNH</h3>
+
+        <?php if (!empty($error_message)): ?>
+            <div class="alert alert-danger alert-dismissible fade show">
+                <?= htmlspecialchars($error_message) ?>
+                <button class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
+
+        <form method="post">
+            <input type="hidden" name="id" value="<?= $id ?>">
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Mã lịch trình</label>
+                    <input type="text" class="form-control" name="ma_lich_trinh"
+                           value="<?= htmlspecialchars($ma_lich_trinh) ?>" required autofocus>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Tàu</label>
+                    <select class="form-control" name="id_tau" required>
+                        <option value="">-- Chọn tàu --</option>
+                        <?php foreach ($tau_list as $tau): ?>
+                            <option value="<?= $tau['id'] ?>" <?= $id_tau == $tau['id'] ? 'selected' : '' ?>>
+                                <?= $tau['ma_tau'] . ' - ' . $tau['ten_tau'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Tuyến đường</label>
+                    <select class="form-control" name="id_tuyen_duong" required>
+                        <option value="">-- Chọn tuyến --</option>
+                        <?php foreach ($tuyen_list as $tuyen): ?>
+                            <option value="<?= $tuyen['id'] ?>" <?= $id_tuyen_duong == $tuyen['id'] ? 'selected' : '' ?>>
+                                <?= $tuyen['ma_tuyen'] . ' - ' . $tuyen['ten_tuyen'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Trạng thái</label>
+                    <select class="form-control" name="trang_thai">
+                        <?php
+                        $arr = ['Chưa chạy', 'Đang chạy', 'Đã hoàn thành', 'Hủy'];
+                        foreach ($arr as $tt):
+                        ?>
+                            <option value="<?= $tt ?>" <?= $trang_thai == $tt ? 'selected' : '' ?>><?= $tt ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Ngày đi</label>
+                    <input type="datetime-local" class="form-control" name="ngay_di"
+                           value="<?= $ngay_di ?>" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Ngày đến</label>
+                    <input type="datetime-local" class="form-control" name="ngay_den"
+                           value="<?= $ngay_den ?>" required>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button class="btn btn-primary" name="btnEdit">Cập nhật</button>
+                <a href="index.php" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+<?php
+require_once __DIR__. '/../../includes/footer.php';?>
