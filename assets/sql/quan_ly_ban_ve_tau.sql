@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 21, 2025 at 05:12 PM
+-- Generation Time: Dec 23, 2025 at 02:19 PM
 -- Server version: 8.4.7
 -- PHP Version: 8.5.0
 
@@ -32,10 +32,10 @@ USE `quan_ly_ban_ve_tau`;
 DROP TABLE IF EXISTS `ga_tau`;
 CREATE TABLE IF NOT EXISTS `ga_tau` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `ma_ga` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: HN, DN, SG',
-  `ten_ga` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: Ga Hà Nội',
-  `dia_chi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `thanh_pho` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ma_ga` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: HN, DN, SG',
+  `ten_ga` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: Ga Hà Nội',
+  `dia_chi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `thanh_pho` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ma_ga` (`ma_ga`),
   UNIQUE KEY `ten_ga` (`ten_ga`)
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `ga_tau` (
 DROP TABLE IF EXISTS `ghe`;
 CREATE TABLE IF NOT EXISTS `ghe` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `so_ghe` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: A1, B2',
+  `so_ghe` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: A1, B2',
   `id_toa_tau` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_ghe_trong_toa` (`so_ghe`,`id_toa_tau`),
@@ -66,12 +66,12 @@ CREATE TABLE IF NOT EXISTS `ghe` (
 DROP TABLE IF EXISTS `khach_hang`;
 CREATE TABLE IF NOT EXISTS `khach_hang` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `cccd` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ho_ten` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cccd` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ho_ten` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `ngay_sinh` date DEFAULT (curdate()),
-  `gioi_tinh` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sdt` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `dia_chi` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gioi_tinh` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sdt` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dia_chi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sdt` (`sdt`),
   UNIQUE KEY `cccd` (`cccd`)
@@ -86,12 +86,12 @@ CREATE TABLE IF NOT EXISTS `khach_hang` (
 DROP TABLE IF EXISTS `lich_trinh`;
 CREATE TABLE IF NOT EXISTS `lich_trinh` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `ma_lich_trinh` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ma_lich_trinh` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `id_tau` int NOT NULL,
   `id_tuyen_duong` int NOT NULL,
   `ngay_di` datetime NOT NULL,
   `ngay_den` datetime NOT NULL,
-  `trang_thai` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `trang_thai` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_tau_schedule` (`id_tau`,`ngay_di`),
   UNIQUE KEY `ma_lich_trinh` (`ma_lich_trinh`),
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `lich_trinh` (
 DROP TABLE IF EXISTS `loai_toa`;
 CREATE TABLE IF NOT EXISTS `loai_toa` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `ten_loai` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: Ngồi mềm điều hòa, Giường nằm',
+  `ten_loai` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: Ngồi mềm điều hòa, Giường nằm',
   `he_so_gia` decimal(3,2) DEFAULT '1.00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `ten_loai` (`ten_loai`)
@@ -122,20 +122,27 @@ CREATE TABLE IF NOT EXISTS `loai_toa` (
 DROP TABLE IF EXISTS `nhan_vien`;
 CREATE TABLE IF NOT EXISTS `nhan_vien` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `ma_nhan_vien` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `mat_khau` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ho_ten` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ma_nhan_vien` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mat_khau` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ho_ten` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `ngay_sinh` date NOT NULL DEFAULT (curdate()),
-  `gioi_tinh` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sdt` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `dia_chi` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `vai_tro` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `gioi_tinh` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sdt` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `dia_chi` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `vai_tro` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ma_nhan_vien` (`ma_nhan_vien`),
   UNIQUE KEY `sdt` (`sdt`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `nhan_vien`
+--
+
+INSERT INTO `nhan_vien` (`id`, `ma_nhan_vien`, `mat_khau`, `ho_ten`, `ngay_sinh`, `gioi_tinh`, `sdt`, `email`, `dia_chi`, `vai_tro`) VALUES
+(1, 'ADMIN01', '$2a$12$gmkjs/CePmv8B6L684vWD.ytns6H4aoo4EXuFcVMAfWD1iV586QzW', 'Admin', '2005-10-29', 'Nam', '0385881860', NULL, 'Hưng Yên', 'Quản trị viên');
 
 -- --------------------------------------------------------
 
@@ -146,8 +153,8 @@ CREATE TABLE IF NOT EXISTS `nhan_vien` (
 DROP TABLE IF EXISTS `tau`;
 CREATE TABLE IF NOT EXISTS `tau` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `ma_tau` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: SE1, TN1',
-  `ten_tau` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: Tàu Thống Nhất SE1',
+  `ma_tau` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: SE1, TN1',
+  `ten_tau` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: Tàu Thống Nhất SE1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `ma_tau` (`ma_tau`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -161,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `tau` (
 DROP TABLE IF EXISTS `toa_tau`;
 CREATE TABLE IF NOT EXISTS `toa_tau` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `ma_toa` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: Toa 1, Toa 2',
+  `ma_toa` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: Toa 1, Toa 2',
   `id_tau` int NOT NULL,
   `id_loai_toa` int NOT NULL,
   PRIMARY KEY (`id`),
@@ -179,8 +186,8 @@ CREATE TABLE IF NOT EXISTS `toa_tau` (
 DROP TABLE IF EXISTS `tuyen_duong`;
 CREATE TABLE IF NOT EXISTS `tuyen_duong` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `ma_tuyen` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: HN-SG',
-  `ten_tuyen` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ma_tuyen` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: HN-SG',
+  `ten_tuyen` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_ga_di` int NOT NULL,
   `id_ga_den` int NOT NULL,
   `khoang_cach_km` int DEFAULT NULL,
@@ -200,14 +207,14 @@ CREATE TABLE IF NOT EXISTS `tuyen_duong` (
 DROP TABLE IF EXISTS `ve_tau`;
 CREATE TABLE IF NOT EXISTS `ve_tau` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `ma_ve` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ma_ve` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_khach_hang` int NOT NULL,
   `id_lich_trinh` int NOT NULL,
   `id_ghe` int NOT NULL,
   `id_nhan_vien` int DEFAULT NULL,
   `ngay_dat` datetime DEFAULT CURRENT_TIMESTAMP,
   `gia_ve` decimal(10,2) NOT NULL,
-  `trang_thai` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `trang_thai` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ma_ve` (`ma_ve`),
   UNIQUE KEY `unique_booking` (`id_lich_trinh`,`id_ghe`),
