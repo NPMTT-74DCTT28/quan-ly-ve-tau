@@ -10,26 +10,29 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a href="<?php echo BASE_URL; ?>">
+            <img src="<?php echo BASE_URL; ?>/assets/images/logo.png" alt="logo"
+                style="height: 100px; width: 150px; background-color: white; margin-left: 5px;">
+        </a>
         <div class="container">
-            <a class="navbar-brand" href="/quan_ly_ban_ve_tau/">Quản lý bán vé tàu</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="/modules/nhan-vien/">Nhân viên</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/modules/tau/">Tàu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/modules/loai-toa/">Loại toa</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/modules/toa-tau/">Toa tàu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/modules/ghe/">Ghế</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/modules/ga-tau/">Ga tàu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/modules/tuyen-duong/">Tuyến đường</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/modules/lich-trinh/">Lịch trình</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/modules/khach-hang/">Khách hàng</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/modules/ve-tau/">Vé tàu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>/modules/nhan-vien/">Nhân viên</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>/modules/tau/">Tàu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>/modules/loai-toa/">Loại toa</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>/modules/toa-tau/">Toa tàu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>/modules/ghe/">Ghế</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>/modules/ga-tau/">Ga tàu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>/modules/tuyen-duong/">Tuyến đường</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>/modules/lich-trinh/">Lịch trình</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>/modules/khach-hang/">Khách hàng</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>/modules/ve-tau/">Vé tàu</a></li>
                 </ul>
                 <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="/modules/auth/login.php">Đăng nhập</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo BASE_URL; ?>/modules/auth/login.php">Đăng nhập</a></li>
                 </ul>
             </div>
         </div>
