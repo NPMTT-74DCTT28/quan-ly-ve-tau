@@ -2,6 +2,11 @@
 require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__. '/../../includes/header.php';
 
+if (!isset($_SESSION['user'])) {
+    header("Location: " . BASE_URL . "modules/auth/dang_nhap.php");
+    exit();
+}
+
 $conn = $db->getConnection();
 
 $ma_tau = isset($_POST['ma_tau']) ? trim($_POST['ma_tau']) : '';

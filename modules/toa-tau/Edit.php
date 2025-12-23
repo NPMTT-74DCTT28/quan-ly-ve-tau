@@ -2,6 +2,11 @@
 require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__. '/../../includes/header.php';
 
+if (!isset($_SESSION['user'])) {
+    header("Location: " . BASE_URL . "modules/auth/dang_nhap.php");
+    exit();
+}
+
 $conn = $db->getConnection();
 
 // Lấy dữ liệu dropdown
