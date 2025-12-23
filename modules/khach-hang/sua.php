@@ -1,6 +1,7 @@
 <?php
-include_once '../../config/database.php';
-require_once '../../includes/header.php';
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/../../includes/header.php';
+$conn = $db->getConnection();
 
 $id = $cccd = $ho_ten = $ngay_sinh = $gioi_tinh = $sdt = $dia_chi = '';
 $error_message = '';
@@ -9,7 +10,7 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
     $sql_select = "SELECT * FROM khach_hang WHERE id = ?";
-    $stmt = $pdo->prepare($sql_select);
+    $stmt = $conn->prepare($sql_select);
     $stmt->execute([$id]);
     $row = $stmt->fetch();
 
@@ -29,7 +30,7 @@ if (isset($_GET['id'])) {
 }
 
 // Xử lý khi người dùng nhấn nút Cập nhật
-if (isset($_POST['btnsua'])) {
+if (isset($_POST['btnEdit'])) {
     $id = $_POST['id'];
     $cccd = $_POST['cccd'];
     $ho_ten = $_POST['ho_ten'];
@@ -40,7 +41,7 @@ if (isset($_POST['btnsua'])) {
 
     // Kiểm tra số điện thoại đã tồn tại chưa (trừ khách hàng hiện tại)
     $sql_check_sdt = "SELECT * FROM khach_hang WHERE sdt = ? AND id != ?";
-    $stmt_check_sdt = $pdo->prepare($sql_check_sdt);
+    $stmt_check_sdt = $conn->prepare($sql_check_sdt);
     $stmt_check_sdt->execute([$sdt, $id]);
 
     if ($stmt_check_sdt->rowCount() > 0) {
@@ -49,7 +50,7 @@ if (isset($_POST['btnsua'])) {
         // Kiểm tra CCCD nếu có
         if (!empty($cccd)) {
             $sql_check_cccd = "SELECT * FROM khach_hang WHERE cccd = ? AND id != ?";
-            $stmt_check_cccd = $pdo->prepare($sql_check_cccd);
+            $stmt_check_cccd = $conn->prepare($sql_check_cccd);
             $stmt_check_cccd->execute([$cccd, $id]);
 
             if ($stmt_check_cccd->rowCount() > 0) {
@@ -67,7 +68,7 @@ if (isset($_POST['btnsua'])) {
                            sdt = ?, 
                            dia_chi = ? 
                            WHERE id = ?";
-            $stmt_update = $pdo->prepare($sql_update);
+            $stmt_update = $conn->prepare($sql_update);
             if ($stmt_update->execute([$cccd, $ho_ten, $ngay_sinh, $gioi_tinh, $sdt, $dia_chi, $id])) {
                 echo "<script>alert('Cập nhật thông tin thành công!'); window.location='index.php';</script>";
             } else {
@@ -197,7 +198,7 @@ if (isset($_POST['btnsua'])) {
                 </div>
                 
                 <div class="btn-container">
-                    <button type="submit" class="btn btn-primary btn-custom" name="btnsua">
+                    <button type="submit" class="btn btn-primary btn-custom" name="btnEdit">
                         <i class="bi bi-save"></i> Cập nhật
                     </button>
                     <a href="index.php" class="btn btn-secondary btn-custom">

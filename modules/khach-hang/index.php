@@ -1,7 +1,7 @@
 <?php
-require_once '../../config/database.php';
-require_once '../../includes/header.php';
-
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/../../includes/header.php';
+$conn = $db->getConnection();
 
 // Khởi tạo các biến tìm kiếm
 $id = isset($_POST['id']) ? $_POST['id'] : '';
@@ -16,10 +16,7 @@ $dia_chi = isset($_POST['dia_chi']) ? $_POST['dia_chi'] : '';
 $sql = "SELECT * FROM khach_hang WHERE 1=1";
 $params = [];
 
-if (!empty($id)) {
-    $sql .= " AND id LIKE ?";
-    $params[] = "%$id%";
-}
+
 if (!empty($cccd)) {
     $sql .= " AND cccd LIKE ?";
     $params[] = "%$cccd%";
@@ -47,7 +44,7 @@ if (!empty($dia_chi)) {
 
 $sql .= " ORDER BY id DESC";
 
-$stmt = $pdo->prepare($sql);
+$stmt = $conn->prepare($sql);
 $stmt->execute($params);
 $data_search = $stmt->fetchAll();
 
@@ -229,7 +226,7 @@ if (isset($_POST['btnAdd'])) {
                 <table class="table table-bordered table-hover">
                     <thead class="table-primary">
                         <tr>
-                            <th width="5%">STT</th>
+                            
                             <th width="5%">ID</th>
                             <th width="15%">CCCD</th>
                             <th width="20%">Họ và Tên</th>
@@ -247,7 +244,7 @@ if (isset($_POST['btnAdd'])) {
                             foreach ($data_search as $row) {
                         ?>
                                 <tr>
-                                    <td class="text-center"><?php echo $i++; ?></td>
+                                    
                                     <td><?php echo htmlspecialchars($row['id']); ?></td>
                                     <td><?php echo htmlspecialchars($row['cccd']); ?></td>
                                     <td><?php echo htmlspecialchars($row['ho_ten']); ?></td>

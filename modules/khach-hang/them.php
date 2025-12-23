@@ -1,6 +1,7 @@
 <?php
-require_once '../../config/database.php';
-require_once '../../includes/header.php';
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/../../includes/header.php';
+$conn = $db->getConnection();
 
 $cccd = $ho_ten = $ngay_sinh = $gioi_tinh = $sdt = $dia_chi = '';
 $show_success = false;
@@ -22,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $show_error = true;
         } else {
             $sql_check_sdt = "SELECT * FROM khach_hang WHERE sdt = ?";
-            $stmt_check_sdt = $pdo->prepare($sql_check_sdt);
+            $stmt_check_sdt = $conn->prepare($sql_check_sdt);
             $stmt_check_sdt->execute([$sdt]);
 
             if ($stmt_check_sdt->rowCount() > 0) {
@@ -31,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 if (!empty($cccd)) {
                     $sql_check_cccd = "SELECT * FROM khach_hang WHERE cccd = ?";
-                    $stmt_check_cccd = $pdo->prepare($sql_check_cccd);
+                    $stmt_check_cccd = $conn->prepare($sql_check_cccd);
                     $stmt_check_cccd->execute([$cccd]);
 
                     if ($stmt_check_cccd->rowCount() > 0) {
@@ -43,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!$show_error) {
                     $sql_insert = "INSERT INTO khach_hang (cccd, ho_ten, ngay_sinh, gioi_tinh, sdt, dia_chi) 
                                    VALUES (?, ?, ?, ?, ?, ?)";
-                    $stmt_insert = $pdo->prepare($sql_insert);
+                    $stmt_insert = $conn->prepare($sql_insert);
                     if ($stmt_insert->execute([$cccd, $ho_ten, $ngay_sinh, $gioi_tinh, $sdt, $dia_chi])) {
                         $success_message = "Thêm thông tin khách hàng thành công!";
                         $show_success = true;
