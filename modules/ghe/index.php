@@ -8,20 +8,21 @@ $so_ghe = isset($_POST['so_ghe']) ? trim($_POST['so_ghe']) : '';
 $id_toa_tau = isset($_POST['id_toa_tau']) ? trim($_POST['id_toa_tau']) : '';
 
 try {
-    $sql = "SELECT * FROM ghe WHERE 1=1";
+    $sql = "SELECT ghe.*, toa_tau.ma_toa 
+            FROM ghe 
+            INNER JOIN toa_tau ON ghe.id_toa_tau = toa_tau.id 
+            WHERE 1=1";
     $params = [];
 
+    // Nếu người dùng nhập vào ô tìm kiếm
     if (!empty($so_ghe)) {
-        $sql .= " OR so_ghe LIKE ?";
+        // Tìm kiếm đồng thời ở cả cột số ghế VÀ mã toa tàu
+        $sql .= " AND (ghe.so_ghe LIKE ? OR toa_tau.ma_toa LIKE ?)";
+        $params[] = "%$so_ghe%";
         $params[] = "%$so_ghe%";
     }
 
-    if(!empty($id_toa_tau)){
-        $sql .= "OR id_toa_tau LIKE ?";
-        $params[] = "%$id_toa_tau%";
-    }
-
-    $sql .= " ORDER BY id DESC";
+    $sql .= " ORDER BY ghe.id DESC";
     $stmt = $conn->prepare($sql);
     $stmt->execute($params);
     $ghe = $stmt->fetchAll();
@@ -96,8 +97,7 @@ try {
                     <tr>
                         <th>STT</th>
                         <th>Số Ghế</th>
-                        <th>Thuộc Toa Tàu</th>
-                        <th>Hành động</th>
+                        <th>Thuộc Toa Tàu</th> <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,7 +106,7 @@ try {
                             <tr>
                                 <td><?= $i++ ?></td>
                                 <td><?= htmlspecialchars($row['so_ghe']) ?></td>
-                                <td><?= htmlspecialchars($row['id_toa_tau']) ?></td>
+                                <td><?= htmlspecialchars($row['ma_toa']) ?></td> 
                                 <td>
                                     <a class="btn btn-sm btn-primary" href="Edit.php?id=<?= $row['id'] ?>"><i class="bi bi-pencil"></i></a>
                                     <a class="btn btn-sm btn-danger" href="Delete.php?id=<?= $row['id'] ?>" onclick="return confirm('Xóa ghế này?')"><i class="bi bi-trash"></i></a>
