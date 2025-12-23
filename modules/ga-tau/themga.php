@@ -1,27 +1,36 @@
 <?php
-require_once '../../config/database.php';
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/../../includes/header.php';
 
+// 1. Khởi tạo kết nối
+$conn = $db->getConnection();
+
+// 2. Xử lý khi người dùng nhấn nút Lưu (btnLuu)
 if (isset($_POST['btnthem'])) {
-    $maGa = $_POST['masv'];
-    $tenGa = $_POST['hotensv'];
-    $diaChi = $_POST['dc'];
-    $thanhPho = $_POST['lop'];
-    $sql = "INSERT INTO ga_tau (ma_ga, ten_ga, dia_chi, thanh_pho) 
-            VALUES ('$maGa', '$tenGa', '$diaChi', '$thanhPho')";
+    // Lấy dữ liệu từ các ô input
+    $ma = $_POST['txtmaga'];
+    $ten = $_POST['txttenga'];
+    $dc = $_POST['txtdiachi'];
+    $tp = $_POST['txtthanhpho'];
+
+    // Câu lệnh INSERT với dấu ?
+    $sql = "INSERT INTO ga_tau (ma_ga, ten_ga, dia_chi, thanh_pho) VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
 
     try {
-        $pdo->query($sql);
+        // Thực thi với mảng tham số tương ứng 4 dấu ?
+        $stmt->execute([$ma, $ten, $dc, $tp]);
 
         echo "<script>
-                alert('Thêm ga thành công!');
-                window.location.href = 'themga.php'; 
+                alert('Thêm ga tàu thành công!');
+                window.location.href = 'index.php';
               </script>";
+        exit();
     } catch (PDOException $e) {
-        echo "<script>alert('Thêm ga thất bại!');</script>";
+        // Trường hợp trùng khóa chính (ma_ga) hoặc lỗi DB
+        echo "<script>alert('Lỗi: Không thể thêm ga. Có thể mã ga đã tồn tại!');</script>";
     }
 }
-
-require_once '../../includes/header.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,22 +50,22 @@ require_once '../../includes/header.php';
 
         <div class="form-row">
             <label>Mã Ga</label>
-            <input type="text" name="masv" required>
+            <input type="text" name="txtmaga" required>
         </div>
 
         <div class="form-row">
             <label>Tên Ga</label>
-            <input type="text" name="hotensv" required>
+            <input type="text" name="txttenga" required>
         </div>
 
         <div class="form-row">
             <label>Địa chỉ</label>
-            <input type="text" name="dc" required>
+            <input type="text" name="txtdiachi" required>
         </div>
 
         <div class="form-row">
             <label>Thành phố</label>
-            <input type="text" name="lop" required>
+            <input type="text" name="txtthanhpho" required>
         </div>
 
         <div class="form-actions">
@@ -71,4 +80,4 @@ require_once '../../includes/header.php';
 
 </body>
 </html>
-<?php require_once '../../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

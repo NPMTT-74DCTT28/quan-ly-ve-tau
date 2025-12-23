@@ -1,25 +1,30 @@
 <?php
-require_once '../../config/database.php';
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/../../includes/header.php';
+
+$conn = $db -> getConnection();
+
+$ma_ga = isset($_POST['txtmaga']) ? $_POST['txtmaga'] : '';
+$ten_ga = isset($_POST['txttenga']) ? $_POST['txttenga'] : '';
 
 $sql = "SELECT * FROM ga_tau WHERE 1=1";
+$params = [];
 
-if (isset($_POST['btnTimkiem'])) {
-    $maGa = $_POST['txtmaga'];
-    $tenGa = $_POST['txttenga'];
-
-    if (!empty($maGa)) {
-        $sql .= " AND ma_ga LIKE '%$maGa%'";
-    }
-    if (!empty($tenGa)) {
-        $sql .= " AND ten_ga LIKE '%$tenGa%'";
-    }
+if (!empty($ma_ga)) {
+    $sql .= " AND ma_ga LIKE ?";
+    $params[] = "%$ma_ga%";
 }
 
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$data = $stmt->fetchAll();
+if (!empty($ten_ga)) {
+    $sql .= " AND ten_ga LIKE ?";
+    $params[] = "%$ten_ga%";
+}
 
-require_once '../../includes/header.php';
+$sql .= " ORDER BY ma_ga ASC";
+
+$stmt = $conn->prepare($sql);
+$stmt->execute($params);
+$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -105,4 +110,4 @@ require_once '../../includes/header.php';
 </div>
 </body>
 </html>
-<?php require_once '../../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
