@@ -12,7 +12,7 @@
     <div>
         <nav class="nav">
             <div class="nav-items">
-                <a href="<?php echo BASE_URL ?>"><img src="<?php echo BASE_URL ?>assets/images/logo1.png" alt="logo" class="logo"></a>
+                <a href="<?php echo BASE_URL ?>"><img src="<?php echo BASE_URL ?>assets/images/logo.png" alt="logo" class="logo"></a>
                 <ul>
                     <li><a href="<?php echo BASE_URL ?>modules/nhan-vien/">Nhân viên</a></li>
                     <li><a href="<?php echo BASE_URL ?>modules/tau/">Tàu</a></li>
