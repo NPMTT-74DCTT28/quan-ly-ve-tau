@@ -151,8 +151,16 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <select name="vai_tro" class="form-control">
                 <option value="">-- Tất cả vai trò --</option>
-                <option value="Quản trị viên" <?php echo $vai_tro === 'Quản trị viên' ? 'selected' : ''; ?>><?php echo ROLE_ADMIN; ?></option>
-                <option value="Nhân viên bán vé" <?php echo $vai_tro === 'Nhân viên bán vé' ? 'selected' : ''; ?>><?php echo ROLE_NHAN_VIEN; ?></option>
+
+                <option value="<?php echo ROLE_ADMIN; ?>"
+                    <?php echo $vai_tro === ROLE_ADMIN ? 'selected' : ''; ?>>
+                    <?php echo ROLE_ADMIN; ?>
+                </option>
+
+                <option value="<?php echo ROLE_NHAN_VIEN; ?>"
+                    <?php echo $vai_tro === ROLE_NHAN_VIEN ? 'selected' : ''; ?>>
+                    <?php echo ROLE_NHAN_VIEN; ?>
+                </option>
             </select>
 
             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
