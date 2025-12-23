@@ -1,5 +1,26 @@
 <?php
 require_once '../../config/database.php';
+
+if (isset($_POST['btnthem'])) {
+    $maGa = $_POST['masv'];
+    $tenGa = $_POST['hotensv'];
+    $diaChi = $_POST['dc'];
+    $thanhPho = $_POST['lop'];
+    $sql = "INSERT INTO ga_tau (ma_ga, ten_ga, dia_chi, thanh_pho) 
+            VALUES ('$maGa', '$tenGa', '$diaChi', '$thanhPho')";
+
+    try {
+        $pdo->query($sql);
+
+        echo "<script>
+                alert('Thêm ga thành công!');
+                window.location.href = 'themga.php'; 
+              </script>";
+    } catch (PDOException $e) {
+        echo "<script>alert('Thêm ga thất bại!');</script>";
+    }
+}
+
 require_once '../../includes/header.php';
 ?>
 <!DOCTYPE html>

@@ -1,5 +1,24 @@
 <?php
 require_once '../../config/database.php';
+
+$sql = "SELECT * FROM ga_tau WHERE 1=1";
+
+if (isset($_POST['btnTimkiem'])) {
+    $maGa = $_POST['txtmaga'];
+    $tenGa = $_POST['txttenga'];
+
+    if (!empty($maGa)) {
+        $sql .= " AND ma_ga LIKE '%$maGa%'";
+    }
+    if (!empty($tenGa)) {
+        $sql .= " AND ten_ga LIKE '%$tenGa%'";
+    }
+}
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$data = $stmt->fetchAll();
+
 require_once '../../includes/header.php';
 ?>
 <!DOCTYPE html>
@@ -50,32 +69,34 @@ require_once '../../includes/header.php';
             </thead>
 
             <tbody>
-            <?php
-            if (isset($data) && mysqli_num_rows($data)) {
-                $i = 0;
-                while ($row = mysqli_fetch_array($data)) {
-            ?>
+                <?php
+                    if (!empty($data)) {
+                    $i = 0;
+                    foreach ($data as $row) {
+                ?>
                 <tr>
                     <td><?php echo ++$i; ?></td>
-                    <td><?php echo $row['ma_ga']; ?></td>
-                    <td><?php echo $row['ten_ga']; ?></td>
-                    <td><?php echo $row['dia_chi']; ?></td>
-                    <td><?php echo $row['thanh_pho']; ?></td>
+                    <td><?php echo htmlspecialchars($row['ma_ga']); ?></td>
+                    <td><?php echo htmlspecialchars($row['ten_ga']); ?></td>
+                    <td><?php echo htmlspecialchars($row['dia_chi']); ?></td>
+                    <td><?php echo htmlspecialchars($row['thanh_pho']); ?></td>
                     <td class="action-col">
-                        <a href="sua.php?ma_ga=<?php echo $row['ma_ga']; ?>" class="btn_sua">
-                            <i class="fa-solid fa-pen"></i> Sửa
-                        </a>
+                    <a href="suaga.php?ma_ga=<?php echo $row['ma_ga']; ?>" class="btn_sua">
+                        <i class="fa-solid fa-pen"></i> Sửa
+                    </a>
 
-                        <a href="xoa.php?ma_ga=<?php echo $row['ma_ga']; ?>"
-                           class="btn_xoa"
-                           onclick="return confirm('Bạn có muốn xóa ga <?php echo $row['ten_ga']; ?> không ?');">
-                            <i class="fa-solid fa-trash-can"></i> Xóa
-                        </a>
+                    <a href="xoa.php?ma_ga=<?php echo $row['ma_ga']; ?>"
+                    class="btn_xoa"
+                        onclick="return confirm('Bạn có muốn xóa <?php echo htmlspecialchars($row['ten_ga']); ?> không ?');">
+                    <i class="fa-solid fa-trash-can"></i> Xóa
+                    </a>
                     </td>
                 </tr>
             <?php
                 }
-            }
+                } else {
+                    echo "<tr><td colspan='6'>Ga bạn tìm không tồn tại...</td></tr>";
+                }
             ?>
             </tbody>
         </table>
