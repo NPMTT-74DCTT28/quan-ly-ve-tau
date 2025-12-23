@@ -1,8 +1,8 @@
 <?php
-include_once '../../config/database.php';
-require_once '../../includes/header.php';
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__. '/../../includes/header.php';
 
-$conn = getConnection();
+$conn = $db->getConnection();
 
 $ma_tau = isset($_POST['ma_tau']) ? trim($_POST['ma_tau']) : '';
 $ten_tau = isset($_POST['ten_tau']) ? trim($_POST['ten_tau']) : '';
@@ -164,6 +164,6 @@ try {
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<?php require_once '../../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
 
 </html>

@@ -4,22 +4,23 @@ require_once __DIR__. '/../../includes/header.php';
 
 $conn = $db->getConnection();
 
-$id = $ma_tau = $ten_tau = '';
+$id = $ten_loai = $he_so_gia = '';
 $error_message = '';
 
+// 1. LẤY THÔNG TIN CŨ ĐỂ ĐỔ VÀO FORM
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    $sql_select = "SELECT * FROM tau WHERE id = ?";
+    $sql_select = "SELECT * FROM loai_toa WHERE id = ?";
     $stmt = $conn->prepare($sql_select);
     $stmt->execute([$id]);
     $row = $stmt->fetch();
 
     if ($row) {
-        $ma_tau = $row['ma_tau'];
-        $ten_tau = $row['ten_tau'];
+        $ten_loai = $row['ten_loai'];
+        $he_so_gia = $row['he_so_gia'];
     } else {
-        echo "<script>alert('Không tìm thấy thông tin tàu!'); window.location='index.php';</script>";
+        echo "<script>alert('Không tìm thấy thông tin loại toa!'); window.location='index.php';</script>";
         exit;
     }
 } else {
@@ -27,27 +28,30 @@ if (isset($_GET['id'])) {
     exit;
 }
 
+// 2. XỬ LÝ KHI NGƯỜI DÙNG NHẤN NÚT LƯU THAY ĐỔI
 if (isset($_POST['btnEdit'])) {
     $id = $_POST['id'];
-    $ma_tau = trim($_POST['ma_tau']);
-    $ten_tau = trim($_POST['ten_tau']);
+    $ten_loai = trim($_POST['ten_loai']);
+    $he_so_gia = trim($_POST['he_so_gia']);
 
-    if (empty($ma_tau) || empty($ten_tau)) {
-        $error_message = "Vui lòng nhập đầy đủ mã tàu và tên tàu!";
+    if (empty($ten_loai) || empty($he_so_gia)) {
+        $error_message = "Vui lòng nhập đầy đủ tên loại và hệ số giá!";
     } else {
         try {
-            $sql_check = "SELECT id FROM tau WHERE ma_tau = ? AND id <> ?";
+            // Kiểm tra xem tên loại mới có bị trùng với loại khác đã có trong DB không
+            $sql_check = "SELECT id FROM loai_toa WHERE ten_loai = ? AND id <> ?";
             $stmt_check = $conn->prepare($sql_check);
-            $stmt_check->execute([$ma_tau, $id]);
+            $stmt_check->execute([$ten_loai, $id]);
 
             if ($stmt_check->rowCount() > 0) {
-                $error_message = "Mã tàu '$ma_tau' đã tồn tại ở một tàu khác! Vui lòng chọn mã khác.";
+                $error_message = "Tên loại '$ten_loai' đã tồn tại! Vui lòng chọn tên khác.";
             } else {
-                $sql_update = "UPDATE tau SET ma_tau = ?, ten_tau = ? WHERE id = ?";
+                // Cập nhật vào bảng loai_toa
+                $sql_update = "UPDATE loai_toa SET ten_loai = ?, he_so_gia = ? WHERE id = ?";
                 $stmt_update = $conn->prepare($sql_update);
                 
-                if ($stmt_update->execute([$ma_tau, $ten_tau, $id])) {
-                    echo "<script>alert('Cập nhật thông tin tàu thành công!'); window.location='index.php';</script>";
+                if ($stmt_update->execute([$ten_loai, $he_so_gia, $id])) {
+                    echo "<script>alert('Cập nhật thông tin thành công!'); window.location='index.php';</script>";
                 } else {
                     $error_message = "Cập nhật thất bại! Vui lòng thử lại.";
                 }
@@ -63,7 +67,7 @@ if (isset($_POST['btnEdit'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cập nhật thông tin Tàu</title>
+    <title>Cập nhật Loại Toa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
@@ -74,7 +78,7 @@ if (isset($_POST['btnEdit'])) {
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        h2 { color: #2c3e50; text-align: center; margin-bottom: 30px; font-weight: 700; }
+        h2 { color: #2c3e50; text-align: center; margin-bottom: 30px; font-weight: 700; text-transform: uppercase; }
         .form-label { font-weight: 600; color: #34495e; }
         .btn-container { display: flex; justify-content: center; gap: 20px; margin-top: 30px; }
         .btn-custom { min-width: 150px; padding: 10px 25px; font-weight: 600; }
@@ -84,7 +88,7 @@ if (isset($_POST['btnEdit'])) {
 <body>
     <div class="container">
         <div class="form-container">
-            <h2>CẬP NHẬT THÔNG TIN TÀU</h2>
+            <h2>CẬP NHẬT LOẠI TOA</h2>
             
             <?php if(!empty($error_message)): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -97,30 +101,17 @@ if (isset($_POST['btnEdit'])) {
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($id); ?>">
                 
                 <div class="mb-3">
-                    <label for="ma_tau" class="form-label required">Mã Tàu:</label>
-                    <input type="text" class="form-control" name="ma_tau" 
-                           value="<?php echo htmlspecialchars($ma_tau); ?>" required>
+                    <label for="ten_loai" class="form-label required">Tên Loại:</label>
+                    <input type="text" class="form-control" name="ten_loai" 
+                           value="<?php echo htmlspecialchars($ten_loai); ?>" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="ten_tau" class="form-label required">Tên Tàu:</label>
-                    <input type="text" class="form-control" name="ten_tau" 
-                           value="<?php echo htmlspecialchars($ten_tau); ?>" required>
+                    <label for="he_so_gia" class="form-label required">Hệ Số Giá:</label>
+                    <input type="number" step="0.01" class="form-control" name="he_so_gia" 
+                           value="<?php echo htmlspecialchars($he_so_gia); ?>" required>
                 </div>
                 
                 <div class="btn-container">
                     <button type="submit" class="btn btn-primary btn-custom" name="btnEdit">
                         <i class="bi bi-save"></i> Lưu thay đổi
-                    </button>
-                    <a href="index.php" class="btn btn-secondary btn-custom">
-                        <i class="bi bi-arrow-left"></i> Quay lại
-                    </a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-<?php require_once '../../includes/footer.php'; ?>
-</html>
