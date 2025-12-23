@@ -295,7 +295,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
                     <button type="submit" class="btn btn-success btn-custom" name="btnAdd">
                         <i class="bi bi-plus-circle"></i> Thêm vé
                     </button>
-                    <a href="index_ve_tau.php" class="btn btn-secondary btn-custom">
+                    <a href="<?php echo BASE_URL . '/modules/ve-tau/' ?>" class="btn btn-secondary btn-custom">
                         <i class="bi bi-arrow-left"></i> Quay lại
                     </a>
                 </div>

@@ -30,7 +30,7 @@ if (!empty($vai_tro)) {
     $params[] = $vai_tro;
 }
 
-$sql .= " ORDER BY id DESC";
+$sql .= " ORDER BY id ASC";
 $stmt = $conn->prepare($sql);
 $stmt->execute($params);
 $nhan_viens = $stmt->fetchAll();
