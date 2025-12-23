@@ -5,3 +5,6 @@ define('DB_PASS', '');
 define('DB_NAME', 'quan_ly_ban_ve_tau');
 define('BASE_URL', 'http://localhost/quan-ly-ban-ve-tau/');
 define('SITE_NAME', 'Hệ thống quản lý bán vé tàu');
+
+define('ROLE_ADMIN', 'Quản trị viên');
+define('ROLE_NHAN_VIEN', 'Nhân viên');
