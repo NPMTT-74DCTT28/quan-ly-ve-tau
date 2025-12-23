@@ -13,6 +13,8 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     exit;
 }
 
+requireAdmin();
+
 $id = (int) $_GET['id'];
 
 // Thực hiện xóa

@@ -7,6 +7,8 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+requireAdmin();
+
 $conn = $db->getConnection();
 
 $so_ghe = isset($_POST['so_ghe']) ? trim($_POST['so_ghe']) : '';
