@@ -146,10 +146,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <button type="submit" class="btn-submit">Đăng nhập</button>
         </form>
-
-        <div class="footer-link">
-            <p>Chưa có tài khoản? <a href="<?php echo BASE_URL ?>modules/auth/dang_ky.php">Đăng ký ngay</a></p>
-        </div>
     </div>
 
 </body>
