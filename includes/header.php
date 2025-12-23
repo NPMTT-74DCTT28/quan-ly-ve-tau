@@ -23,7 +23,7 @@
                     <li><a href="<?php echo BASE_URL ?>modules/lich-trinh/">Lịch trình</a></li>
                     <li><a href="<?php echo BASE_URL ?>modules/khach-hang/">Khách hàng</a></li>
                     <li><a href="<?php echo BASE_URL ?>modules/ve-tau/">Vé tàu</a></li>
-                    <li><a href="<?php echo BASE_URL ?>modules/dang-nhap/">Đăng nhập</a></li>
+                    <li><a href="<?php echo BASE_URL ?>modules/auth/dang_nhap.php">Đăng nhập</a></li>
                 </ul>
             </div>
         </nav>
