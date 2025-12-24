@@ -54,7 +54,7 @@ $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <button type="submit" name="btnTimkiem" class="btn_timkiem">
                 <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
             </button>
-            <a href="themga.php" class="btn_them">
+            <a href="themtuyen.php" class="btn_them">
                 <i class="fa-solid fa-plus"></i> Thêm tuyến đường
             </a>
         </div>
@@ -104,7 +104,7 @@ $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php
                 }
                 } else {
-                    echo "<tr><td colspan='8'>Tuyến đường bạn tìm không tồn tại...</td></tr>";
+                    echo "<tr><td colspan='8'>Không có tuyến đường nào...</td></tr>";
                 }
             ?>
             </tbody>

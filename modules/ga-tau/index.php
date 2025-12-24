@@ -100,7 +100,7 @@ $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php
                 }
                 } else {
-                    echo "<tr><td colspan='6'>Ga bạn tìm không tồn tại...</td></tr>";
+                    echo "<tr><td colspan='6'>Không có ga nào...</td></tr>";
                 }
             ?>
             </tbody>
