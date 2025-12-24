@@ -6,6 +6,8 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+requireAdmin();
+
 $id = $_GET['id'] ?? 0;
 
 if ($id == $_SESSION['user']['id']) {

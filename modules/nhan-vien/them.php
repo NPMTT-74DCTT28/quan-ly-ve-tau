@@ -6,6 +6,8 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+requireAdmin();
+
 $error = '';
 $success = '';
 

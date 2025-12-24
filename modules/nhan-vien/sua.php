@@ -10,7 +10,6 @@ $id = $_GET['id'] ?? 0;
 $conn = $db->getConnection();
 $error = '';
 
-// Lấy thông tin nhân viên hiện tại
 $stmt = $conn->prepare("SELECT * FROM nhan_vien WHERE id = ?");
 $stmt->execute([$id]);
 $nv = $stmt->fetch();
