@@ -7,24 +7,35 @@ $conn = $db -> getConnection();
 $ma_tuyen = isset($_POST['txtmatuyen']) ? $_POST['txtmatuyen'] : '';
 $ten_tuyen = isset($_POST['txttentuyen']) ? $_POST['txttentuyen'] : '';
 
-$sql = "SELECT * FROM tuyen_duong WHERE 1=1";
+$sql = "SELECT 
+    td.ma_tuyen,
+    td.ten_tuyen,
+    gd.ten_ga AS ten_ga_di,
+    gden.ten_ga AS ten_ga_den,
+    td.khoang_cach_km,
+    td.gia_co_ban
+FROM tuyen_duong td
+JOIN ga_tau gd   ON td.id_ga_di  = gd.id
+JOIN ga_tau gden ON td.id_ga_den = gden.id
+WHERE 1=1";
 $params = [];
 
 if (!empty($ma_tuyen)) {
-    $sql .= " AND ma_tuyen LIKE ?";
+    $sql .= " AND td.ma_tuyen LIKE ?";
     $params[] = "%$ma_tuyen%";
 }
 
 if (!empty($ten_tuyen)) {
-    $sql .= " AND ten_tuyen LIKE ?";
+    $sql .= " AND td.ten_tuyen LIKE ?";
     $params[] = "%$ten_tuyen%";
 }
 
-$sql .= " ORDER BY ma_tuyen ASC";
+$sql .= " ORDER BY td.ma_tuyen ASC";
 
 $stmt = $conn->prepare($sql);
 $stmt->execute($params);
 $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -85,8 +96,8 @@ $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?php echo ++$i; ?></td>
                     <td><?php echo htmlspecialchars($row['ma_tuyen']); ?></td>
                     <td><?php echo htmlspecialchars($row['ten_tuyen']); ?></td>
-                    <td><?php echo htmlspecialchars($row['id_ga_di']); ?></td>
-                    <td><?php echo htmlspecialchars($row['id_ga_den']); ?></td>
+                    <td><?php echo htmlspecialchars($row['ten_ga_di']); ?></td>
+                    <td><?php echo htmlspecialchars($row['ten_ga_den']); ?></td>
                     <td><?php echo htmlspecialchars($row['khoang_cach_km']); ?></td>
                     <td><?php echo htmlspecialchars($row['gia_co_ban']); ?></td>
                     <td class="action-col">
