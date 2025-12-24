@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../bootstrap.php';
-require_once __DIR__. '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/header.php';
 
 if (!isset($_SESSION['user'])) {
     header("Location: " . BASE_URL . "modules/auth/dang_nhap.php");
@@ -18,7 +18,10 @@ $loai_toa_list = $conn->query("SELECT id, ten_loai FROM loai_toa ORDER BY ten_lo
 $error_message = '';
 
 // Kiểm tra ID
-if (!isset($_GET['id'])) { header("Location: index.php"); exit; }
+if (!isset($_GET['id'])) {
+    header("Location: index.php");
+    exit;
+}
 $id = $_GET['id'];
 
 // Lấy dữ liệu hiện tại
@@ -26,7 +29,10 @@ $stmt = $conn->prepare("SELECT * FROM toa_tau WHERE id = ?");
 $stmt->execute([$id]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$row) { echo "<script>alert('Toa tàu không tồn tại!'); window.location='index.php';</script>"; exit; }
+if (!$row) {
+    echo "<script>alert('Toa tàu không tồn tại!'); window.location='index.php';</script>";
+    exit;
+}
 
 $ma_toa      = $row['ma_toa'];
 $id_tau      = $row['id_tau'];
@@ -62,74 +68,65 @@ if (isset($_POST['btnEdit'])) {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Cập nhật toa tàu</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .custom-card {
-            background-color: #81aad3ff;
-            border-radius: 15px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-            max-width: 700px; margin: 50px auto;
-        }
-        h3 { color: #1f3a5a; font-weight: 600; }
-        .form-label { font-weight: 600; }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div class="card custom-card p-4">
-        <h3 class="text-center mb-4">CẬP NHẬT TOA TÀU</h3>
+<div class="main-content">
+    <h1>CẬP NHẬT TOA TÀU</h1>
 
-        <?php if (!empty($error_message)): ?>
-            <div class="alert alert-danger alert-dismissible fade show">
-                <?= htmlspecialchars($error_message) ?>
-                <button class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
+    <?php if (!empty($error_message)): ?>
+        <div class="alert alert-danger" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+            <?= htmlspecialchars($error_message) ?>
+        </div>
+    <?php endif; ?>
 
-        <form method="post">
-            <div class="mb-3">
-                <label class="form-label">Mã toa</label>
-                <input type="text" class="form-control" name="ma_toa" value="<?= htmlspecialchars($ma_toa) ?>" required>
+    <form method="post">
+        <input type="hidden" name="id" value="<?= htmlspecialchars($id) ?>">
+
+        <div class="row" style="display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px;">
+            <div class="col-md-6" style="flex: 0 0 50%; max-width: 50%; padding-right: 15px; padding-left: 15px; box-sizing: border-box;">
+                <div class="form-group mb-20">
+                    <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Mã toa:</label>
+                    <input type="text" class="form-control" name="ma_toa" value="<?= htmlspecialchars($ma_toa) ?>" required
+                        style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
+                </div>
+
+                <div class="form-group mb-20">
+                    <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Loại toa:</label>
+                    <select class="form-control" name="id_loai_toa" required style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
+                        <option value="">-- Chọn loại toa --</option>
+                        <?php foreach ($loai_toa_list as $l): ?>
+                            <option value="<?= $l['id'] ?>" <?= $id_loai_toa == $l['id'] ? 'selected' : '' ?>>
+                                <?= $l['ten_loai'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Thuộc tàu</label>
-                <select class="form-control" name="id_tau" required>
-                    <option value="">-- Chọn tàu --</option>
-                    <?php foreach ($tau_list as $t): ?>
-                        <option value="<?= $t['id'] ?>" <?= $id_tau == $t['id'] ? 'selected' : '' ?>>
-                            <?= $t['ma_tau'] . ' - ' . $t['ten_tau'] ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+            <div class="col-md-6" style="flex: 0 0 50%; max-width: 50%; padding-right: 15px; padding-left: 15px; box-sizing: border-box;">
+                <div class="form-group mb-20">
+                    <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Thuộc tàu:</label>
+                    <select class="form-control" name="id_tau" required style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
+                        <option value="">-- Chọn tàu --</option>
+                        <?php foreach ($tau_list as $t): ?>
+                            <option value="<?= $t['id'] ?>" <?= $id_tau == $t['id'] ? 'selected' : '' ?>>
+                                <?= $t['ma_tau'] . ' - ' . $t['ten_tau'] ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             </div>
+        </div>
 
-            <div class="mb-3">
-                <label class="form-label">Loại toa</label>
-                <select class="form-control" name="id_loai_toa" required>
-                    <option value="">-- Chọn loại toa --</option>
-                    <?php foreach ($loai_toa_list as $l): ?>
-                        <option value="<?= $l['id'] ?>" <?= $id_loai_toa == $l['id'] ? 'selected' : '' ?>>
-                            <?= $l['ten_loai'] ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="text-center mt-4">
-                <button class="btn btn-primary" name="btnEdit">Cập nhật</button>
-                <a href="index.php" class="btn btn-secondary">Quay lại</a>
-            </div>
-        </form>
-    </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" name="btnEdit" style="background: #007bff; color: white; padding: 10px 25px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">
+                <i class="bi bi-save"></i> Cập nhật
+            </button>
+            <a href="index.php" style="margin-left: 15px; color: #333; text-decoration: none; padding: 10px 20px; background: #e2e6ea; border-radius: 4px; display: inline-block;">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </form>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-<?php 
-require_once __DIR__. '/../../includes/footer.php'; ?>
+
+<?php
+require_once __DIR__ . '/../../includes/footer.php';
+?>

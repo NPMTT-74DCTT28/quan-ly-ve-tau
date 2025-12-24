@@ -17,12 +17,12 @@ $error_message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['btnAdd'])) {
-        $cccd = $_POST['cccd'];
-        $ho_ten = $_POST['ho_ten'];
+        $cccd = trim($_POST['cccd']);
+        $ho_ten = trim($_POST['ho_ten']);
         $ngay_sinh = $_POST['ngay_sinh'] ? $_POST['ngay_sinh'] . ' 00:00:00' : null;
         $gioi_tinh = $_POST['gioi_tinh'];
-        $sdt = $_POST['sdt'];
-        $dia_chi = $_POST['dia_chi'];
+        $sdt = trim($_POST['sdt']);
+        $dia_chi = trim($_POST['dia_chi']);
 
         if (empty($ho_ten) || empty($gioi_tinh) || empty($sdt) || empty($dia_chi)) {
             $error_message = "Vui lòng điền đầy đủ thông tin bắt buộc!";
@@ -63,184 +63,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-
-    if (isset($_POST['btnBack'])) {
-        header('location:index.php');
-        exit();
-    }
-}
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    $show_success = false;
-    $show_error = false;
-    $success_message = '';
-    $error_message = '';
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thêm khách hàng mới</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
-        .container {
-            max-width: 800px;
-            margin-top: 50px;
-        }
-        .form-container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
-        .form-label {
-            font-weight: 600;
-            color: #34495e;
-        }
-        .btn-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
-        .btn-custom {
-            min-width: 150px;
-            padding: 10px 25px;
-            font-weight: 600;
-        }
-        .alert {
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .form-control:focus {
-            border-color: #4a90e2;
-            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
-        }
-        .required::after {
-            content: " *";
-            color: #dc3545;
-        }
-        .form-container {
-            background-color: #7ca3c9ff;
-        }
-        .alert:not(.show) {
-            display: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="form-container">
-            <h2>THÊM KHÁCH HÀNG MỚI</h2>
 
-            <?php if ($show_success && !empty($success_message)): ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <?php echo htmlspecialchars($success_message); ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
+<div class="main-content">
+    <h1>THÊM KHÁCH HÀNG MỚI</h1>
 
-            <?php if ($show_error && !empty($error_message)): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <?php echo htmlspecialchars($error_message); ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
-
-            <form method="post" action="">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="cccd" class="form-label">CCCD:</label>
-                            <input type="text" class="form-control" name="cccd" value="<?php echo htmlspecialchars($cccd); ?>" placeholder="VD: 012345678901">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="ho_ten" class="form-label required">Họ và Tên:</label>
-                            <input type="text" class="form-control" name="ho_ten" value="<?php echo htmlspecialchars($ho_ten); ?>" required placeholder="VD: Nguyễn Văn A">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="ngay_sinh" class="form-label">Ngày sinh:</label>
-                            <input type="date" class="form-control" name="ngay_sinh" value="<?php echo htmlspecialchars($ngay_sinh); ?>">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="gioi_tinh" class="form-label required">Giới tính:</label>
-                            <select class="form-control" name="gioi_tinh" required>
-                                <option value="">-- Chọn giới tính --</option>
-                                <option value="Nam" <?php echo $gioi_tinh == 'Nam' ? 'selected' : ''; ?>>Nam</option>
-                                <option value="Nữ" <?php echo $gioi_tinh == 'Nữ' ? 'selected' : ''; ?>>Nữ</option>
-                                <option value="Khác" <?php echo $gioi_tinh == 'Khác' ? 'selected' : ''; ?>>Khác</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="sdt" class="form-label required">Số điện thoại:</label>
-                            <input type="text" class="form-control" name="sdt" value="<?php echo htmlspecialchars($sdt); ?>" required placeholder="VD: 0912345678">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="dia_chi" class="form-label required">Địa chỉ:</label>
-                            <input type="text" class="form-control" name="dia_chi" value="<?php echo htmlspecialchars($dia_chi); ?>" required placeholder="VD: 123 Đường ABC, Quận 1, TP.HCM">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="btn-container">
-                    <button type="submit" class="btn btn-success btn-custom" name="btnAdd">
-                        <i class="bi bi-plus-circle"></i> Thêm mới
-                    </button>
-                    <a href="index.php" class="btn btn-secondary btn-custom">
-                        <i class="bi bi-arrow-left"></i> Quay lại
-                    </a>
-                </div>
-            </form>
+    <?php if ($show_error && !empty($error_message)): ?>
+        <div class="alert alert-danger" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+            <?= htmlspecialchars($error_message) ?>
         </div>
-    </div>
+    <?php endif; ?>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    
-    <script>
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        var alertElements = document.querySelectorAll('.alert');
-        alertElements.forEach(function(alert) {
-            var closeButton = alert.querySelector('.btn-close');
-            if (closeButton) {
-                closeButton.addEventListener('click', function() {
-                    alert.classList.remove('show');
-                    alert.classList.add('hide');
-                });
-            }
-        });
-        
-        setTimeout(function() {
-            alertElements.forEach(function(alert) {
-                if (alert.classList.contains('show')) {
-                    alert.classList.remove('show');
-                    alert.classList.add('hide');
-                }
-            });
-        }, 5000);
-    });
-    </script>
-</body>
+    <?php if ($show_success && !empty($success_message)): ?>
+        <div class="alert alert-success" style="color: #155724; background-color: #d4edda; border-color: #c3e6cb; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+            <?= htmlspecialchars($success_message) ?>
+        </div>
+    <?php endif; ?>
+
+    <form method="post" action="">
+        <div class="row" style="display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px;">
+            <div class="col-md-6" style="flex: 0 0 50%; max-width: 50%; padding-right: 15px; padding-left: 15px; box-sizing: border-box;">
+                <div class="form-group mb-20">
+                    <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">CCCD:</label>
+                    <input type="text" name="cccd" value="<?php echo htmlspecialchars($cccd); ?>" placeholder="VD: 012345678901"
+                        class="form-control" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
+                </div>
+
+                <div class="form-group mb-20">
+                    <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Họ và Tên (*):</label>
+                    <input type="text" name="ho_ten" value="<?php echo htmlspecialchars($ho_ten); ?>" required placeholder="VD: Nguyễn Văn A"
+                        class="form-control" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
+                </div>
+
+                <div class="form-group mb-20">
+                    <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Ngày sinh:</label>
+                    <input type="date" name="ngay_sinh" value="<?php echo htmlspecialchars($ngay_sinh); ?>"
+                        class="form-control" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
+                </div>
+            </div>
+
+            <div class="col-md-6" style="flex: 0 0 50%; max-width: 50%; padding-right: 15px; padding-left: 15px; box-sizing: border-box;">
+                <div class="form-group mb-20">
+                    <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Giới tính (*):</label>
+                    <select name="gioi_tinh" required class="form-control" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
+                        <option value="">-- Chọn giới tính --</option>
+                        <option value="Nam" <?php echo $gioi_tinh == 'Nam' ? 'selected' : ''; ?>>Nam</option>
+                        <option value="Nữ" <?php echo $gioi_tinh == 'Nữ' ? 'selected' : ''; ?>>Nữ</option>
+                        <option value="Khác" <?php echo $gioi_tinh == 'Khác' ? 'selected' : ''; ?>>Khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-20">
+                    <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Số điện thoại (*):</label>
+                    <input type="text" name="sdt" value="<?php echo htmlspecialchars($sdt); ?>" required placeholder="VD: 0912345678"
+                        class="form-control" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
+                </div>
+
+                <div class="form-group mb-20">
+                    <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Địa chỉ (*):</label>
+                    <input type="text" name="dia_chi" value="<?php echo htmlspecialchars($dia_chi); ?>" required placeholder="VD: 123 Đường ABC..."
+                        class="form-control" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" name="btnAdd" style="background: #28a745; color: white; padding: 10px 25px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">
+                <i class="bi bi-plus-circle"></i> Thêm mới
+            </button>
+            <a href="index.php" style="margin-left: 15px; color: #333; text-decoration: none; padding: 10px 20px; background: #e2e6ea; border-radius: 4px; display: inline-block;">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </form>
+</div>
+
 <?php
 require_once '../../includes/footer.php';
 ?>
-</html>
