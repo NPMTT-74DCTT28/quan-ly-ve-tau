@@ -7,8 +7,6 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-// requireAdmin(); // Bỏ comment nếu cần check quyền admin
-
 $conn = $db->getConnection();
 
 /* =======================
