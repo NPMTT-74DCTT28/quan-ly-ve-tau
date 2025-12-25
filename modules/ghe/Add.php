@@ -34,10 +34,8 @@ if (isset($_POST['btnAdd'])) {
             $stmt_insert = $conn->prepare($sql_insert);
 
             if ($stmt_insert->execute([$so_ghe, $id_toa_tau])) {
-                // Dùng alert script giống them.php hoặc hiển thị message
-                echo "<script>alert('Thêm mới ghế thành công!'); window.location.href='Add.php';</script>";
-                // Hoặc nếu muốn giữ lại form thì dùng biến success_message như dưới
                 $success_message = "Thêm mới ghế thành công!";
+                $show_success = true;
                 $so_ghe = '';
             } else {
                 $error_message = "Thêm thông tin thất bại! Vui lòng thử lại.";
