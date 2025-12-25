@@ -136,14 +136,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="form-group mb-20">
                     <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Ngày đi (*):</label>
-                    <input type="datetime-local" name="ngay_di" value="<?= htmlspecialchars($ngay_di) ?>"
-                        class="form-control" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
+                    <input type="datetime-local" class="form-control" name="ngay_di"
+                        style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;"
+                        value=" <?= $ngay_di ?>" required
+                        min="<?= date('Y-m-d\TH:i') ?>">
                 </div>
 
                 <div class="form-group mb-20">
                     <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Ngày đến (*):</label>
-                    <input type="datetime-local" name="ngay_den" value="<?= htmlspecialchars($ngay_den) ?>"
-                        class="form-control" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
+                    <input type="datetime-local" class="form-control" name="ngay_den"
+                        style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;"
+                        value=" <?= $ngay_den ?>" required
+                        min="<?= date('Y-m-d\TH:i') ?>">
                 </div>
             </div>
 
