@@ -7,19 +7,21 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
+requireAdmin();
+
 $conn = $db->getConnection();
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    
+
     // Kiểm tra xem vé tàu có tồn tại không
     $sql_check = "SELECT * FROM ve_tau WHERE id = ?";
     $stmt_check = $conn->prepare($sql_check);
     $stmt_check->execute([$id]);
-    
+
     if ($stmt_check->rowCount() > 0) {
         $ve_tau = $stmt_check->fetch();
-        
+
         // Kiểm tra trạng thái vé trước khi xóa
         // Nếu vé đã xác nhận hoặc hoàn thành, có thể không cho xóa
         if ($ve_tau['trang_thai'] == 'Đã xác nhận' || $ve_tau['trang_thai'] == 'Hoàn thành') {
@@ -31,7 +33,7 @@ if (isset($_GET['id'])) {
             // Xóa vé tàu
             $sql_delete = "DELETE FROM ve_tau WHERE id = ?";
             $stmt_delete = $conn->prepare($sql_delete);
-            
+
             if ($stmt_delete->execute([$id])) {
                 echo "<script>
                     alert('Xóa vé tàu thành công!');
@@ -56,4 +58,3 @@ if (isset($_GET['id'])) {
         window.location.href = 'index_ve_tau.php';
     </script>";
 }
-?>
