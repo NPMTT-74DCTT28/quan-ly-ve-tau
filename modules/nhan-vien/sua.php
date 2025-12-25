@@ -6,10 +6,18 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-$id = $_GET['id'] ?? 0;
-$conn = $db->getConnection();
-$error = '';
+$current_user_id = $_SESSION['user']['id'];
+$id = $_GET['id'] ?? $current_user_id;
 
+if (!isAdmin() && $id != $current_user_id) {
+    echo "<script>
+            alert('Cảnh báo: Bạn đang cố truy cập thông tin không thuộc quyền hạn!'); 
+            window.location.href='" . BASE_URL . "';
+          </script>";
+    exit();
+}
+
+$conn = $db->getConnection();
 $stmt = $conn->prepare("SELECT * FROM nhan_vien WHERE id = ?");
 $stmt->execute([$id]);
 $nv = $stmt->fetch();
@@ -18,15 +26,21 @@ if (!$nv) {
     die("Nhân viên không tồn tại!");
 }
 
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ho_ten = $_POST['ho_ten'];
-    $mat_khau = $_POST['mat_khau'];
     $ngay_sinh = $_POST['ngay_sinh'];
     $gioi_tinh = $_POST['gioi_tinh'];
     $sdt = $_POST['sdt'];
     $email = $_POST['email'];
     $dia_chi = $_POST['dia_chi'];
-    $vai_tro = $_POST['vai_tro'];
+
+    if (isAdmin()) {
+        $vai_tro = $_POST['vai_tro'];
+    } else {
+        $vai_tro = $nv['vai_tro'];
+    }
 
     try {
         $check = $conn->prepare("SELECT COUNT(*) FROM nhan_vien WHERE sdt = ? AND id != ?");
@@ -35,25 +49,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($check->fetchColumn() > 0) {
             $error = "Số điện thoại này đã được sử dụng bởi nhân viên khác!";
         } else {
-            if (empty($email)) {
-                $email = null;
-            }
+            if (empty($email)) $email = null;
 
-            $sql = "UPDATE nhan_vien SET ho_ten=?, ngay_sinh=?, gioi_tinh=?, sdt=?, email=?, dia_chi=?, vai_tro=?";
-            $params = [$ho_ten, $ngay_sinh, $gioi_tinh, $sdt, $email, $dia_chi, $vai_tro];
-
-            if (!empty($mat_khau)) {
-                $sql .= ", mat_khau=?";
-                $params[] = password_hash($mat_khau, PASSWORD_DEFAULT);
-            }
-
-            $sql .= " WHERE id=?";
-            $params[] = $id;
-
+            $sql = "UPDATE nhan_vien SET ho_ten=?, ngay_sinh=?, gioi_tinh=?, sdt=?, email=?, dia_chi=?, vai_tro=? WHERE id=?";
             $stmt = $conn->prepare($sql);
-            $stmt->execute($params);
+            $stmt->execute([$ho_ten, $ngay_sinh, $gioi_tinh, $sdt, $email, $dia_chi, $vai_tro, $id]);
 
-            echo "<script>alert('Cập nhật thành công!'); window.location.href='index.php';</script>";
+            if ($id == $current_user_id) {
+                $_SESSION['user']['ho_ten'] = $ho_ten;
+            }
+
+            if (isAdmin()) {
+                echo "<script>alert('Cập nhật thành công!'); window.location.href='index.php';</script>";
+            } else {
+                echo "<script>alert('Cập nhật thông tin cá nhân thành công!'); window.location.href='sua.php?id=$id';</script>";
+            }
             exit();
         }
     } catch (PDOException $e) {
@@ -65,7 +75,9 @@ require_once __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="container" style="padding: 20px; max-width: 800px; margin: 0 auto;">
-    <h2>Sửa thông tin: <?php echo $nv['ho_ten']; ?></h2>
+    <h2>
+        <?php echo ($id == $current_user_id) ? "Thông tin cá nhân" : "Sửa nhân viên: " . $nv['ho_ten']; ?>
+    </h2>
 
     <?php if ($error): ?>
         <div style="color: red; background: #f8d7da; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
@@ -76,18 +88,13 @@ require_once __DIR__ . '/../../includes/header.php';
     <form method="POST" action="" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
 
         <div class="form-group" style="margin-bottom: 15px;">
-            <label>Mã nhân viên (Không thể sửa)</label>
+            <label>Mã nhân viên</label>
             <input type="text" class="form-control" value="<?php echo $nv['ma_nhan_vien']; ?>" disabled style="width: 100%; padding: 8px; margin-top: 5px; background: #eee;">
         </div>
 
         <div class="form-group" style="margin-bottom: 15px;">
             <label>Họ và tên</label>
             <input type="text" name="ho_ten" class="form-control" value="<?php echo $nv['ho_ten']; ?>" required style="width: 100%; padding: 8px; margin-top: 5px;">
-        </div>
-
-        <div class="form-group" style="margin-bottom: 15px;">
-            <label>Mật khẩu mới (Để trống nếu không muốn đổi)</label>
-            <input type="password" name="mat_khau" class="form-control" placeholder="Nhập mật khẩu mới..." style="width: 100%; padding: 8px; margin-top: 5px;">
         </div>
 
         <div style="display: flex; gap: 20px;">
@@ -123,22 +130,26 @@ require_once __DIR__ . '/../../includes/header.php';
 
         <div class="form-group" style="margin-bottom: 20px;">
             <label>Vai trò</label>
-            <select name="vai_tro" class="form-control" style="width: 100%; padding: 8px; margin-top: 5px;">
-
-                <option value="<?php echo ROLE_NHAN_VIEN; ?>"
-                    <?php echo $nv['vai_tro'] == ROLE_NHAN_VIEN ? 'selected' : ''; ?>>
-                    <?php echo ROLE_NHAN_VIEN; ?>
-                </option>
-
-                <option value="<?php echo ROLE_ADMIN; ?>"
-                    <?php echo $nv['vai_tro'] == ROLE_ADMIN ? 'selected' : ''; ?>>
-                    <?php echo ROLE_ADMIN; ?>
-                </option>
-            </select>
+            <?php if (isAdmin()): ?>
+                <select name="vai_tro" class="form-control" style="width: 100%; padding: 8px; margin-top: 5px;">
+                    <option value="<?php echo ROLE_NHAN_VIEN; ?>" <?php echo $nv['vai_tro'] == ROLE_NHAN_VIEN ? 'selected' : ''; ?>><?php echo ROLE_NHAN_VIEN; ?></option>
+                    <option value="<?php echo ROLE_ADMIN; ?>" <?php echo $nv['vai_tro'] == ROLE_ADMIN ? 'selected' : ''; ?>><?php echo ROLE_ADMIN; ?></option>
+                </select>
+            <?php else: ?>
+                <input type="text" class="form-control" value="<?php echo $nv['vai_tro']; ?>" disabled style="width: 100%; padding: 8px; margin-top: 5px; background: #eee;">
+            <?php endif; ?>
         </div>
 
-        <button type="submit" style="background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Cập nhật</button>
-        <a href="index.php" style="margin-left: 10px; color: #666; text-decoration: none;">Hủy bỏ</a>
+        <button type="submit" style="background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
+            Lưu thay đổi
+        </button>
+
+        <?php if (isAdmin()): ?>
+            <a href="index.php" style="margin-left: 10px; color: #666; text-decoration: none;">Quay lại danh sách</a>
+        <?php else: ?>
+            <a href="<?php echo BASE_URL; ?>" style="margin-left: 10px; color: #666; text-decoration: none;">Về trang chủ</a>
+        <?php endif; ?>
+
     </form>
 </div>
 

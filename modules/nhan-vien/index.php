@@ -197,7 +197,7 @@ require_once __DIR__ . '/../../includes/header.php';
                             </span>
                         </td>
                         <td class="action-links">
-                            <a href="sua.php?id=<?php echo $nv['id']; ?>" class="btn btn-warning">Sửa</a>
+                            <a href="sua.php?id=<?php echo $nv['id']; ?>&personal= <?php echo 'false' ?>" class="btn btn-warning">Sửa</a>
 
                             <?php if ($_SESSION['user']['id'] != $nv['id']): ?>
                                 <a href="xoa.php?id=<?php echo $nv['id']; ?>"
