@@ -78,11 +78,6 @@ $data_search = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #e9ecef;">
         <form method="post">
             <div class="row" style="display: flex; flex-wrap: wrap; gap: 15px;">
-                <div style="flex: 1; min-width: 150px;">
-                    <label style="font-weight: 600; font-size: 14px; margin-bottom: 5px; display: block;">Mã lịch trình</label>
-                    <input type="text" class="form-control" name="ma_lich_trinh" value="<?= htmlspecialchars($ma_lich_trinh) ?>"
-                        style="width: 100%; padding: 6px 10px; border: 1px solid #ced4da; border-radius: 4px;">
-                </div>
                 <div style="flex: 1; min-width: 200px;">
                     <label style="font-weight: 600; font-size: 14px; margin-bottom: 5px; display: block;">Tàu</label>
                     <select class="form-control" name="id_tau" style="width: 100%; padding: 6px 10px; border: 1px solid #ced4da; border-radius: 4px;">
