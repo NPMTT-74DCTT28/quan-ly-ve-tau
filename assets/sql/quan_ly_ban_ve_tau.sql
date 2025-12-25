@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 23, 2025 at 06:41 PM
+-- Generation Time: Dec 25, 2025 at 04:56 PM
 -- Server version: 8.4.7
 -- PHP Version: 8.5.0
 
@@ -142,8 +142,8 @@ CREATE TABLE IF NOT EXISTS `nhan_vien` (
 --
 
 INSERT INTO `nhan_vien` (`id`, `ma_nhan_vien`, `mat_khau`, `ho_ten`, `ngay_sinh`, `gioi_tinh`, `sdt`, `email`, `dia_chi`, `vai_tro`) VALUES
-(1, 'ADMIN01', '$2a$12$gmkjs/CePmv8B6L684vWD.ytns6H4aoo4EXuFcVMAfWD1iV586QzW', 'Admin', '2005-02-02', 'Nam', '0321456987', NULL, 'TP. Hồ Chí Minh', 'Quản trị viên'),
-(2, 'NV01', '$2a$12$XUDz5TLpGqBa8LeDQfFIUurqjNF2S6GBE4Y/rS3uXhHT8NGALzcxu', 'Nhân viên', '2005-01-01', 'Nữ', '0123456789', NULL, 'Hà Nội', 'Nhân viên');
+(1, 'ADMIN', '$2a$12$gmkjs/CePmv8B6L684vWD.ytns6H4aoo4EXuFcVMAfWD1iV586QzW', 'Nguyễn Văn A', '2000-01-01', 'Nam', '0321456987', NULL, 'TP. Hồ Chí Minh', 'Quản trị viên'),
+(2, 'NV001', '$2a$12$XUDz5TLpGqBa8LeDQfFIUurqjNF2S6GBE4Y/rS3uXhHT8NGALzcxu', 'Lê Thị B', '2000-12-31', 'Nữ', '0123456789', NULL, 'Hà Nội', 'Nhân viên');
 
 -- --------------------------------------------------------
 
