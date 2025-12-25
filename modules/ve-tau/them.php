@@ -176,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
                 <div class="form-group mb-20">
                     <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Lịch trình (*):</label>
                     <select class="form-control" name="id_lich_trinh" id="id_lich_trinh" required onchange="this.form.submit()" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
-                        <option value="">-- Chọn lịch trình để hiện ghế --</option>
+                        <option value="">-- Chọn lịch trình --</option>
                         <?php foreach ($lich_trinh_list as $lt): ?>
                             <option value="<?php echo $lt['id']; ?>" <?php echo $id_lich_trinh == $lt['id'] ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($lt['ma_lich_trinh'] . ' - ' . date('d/m/Y H:i', strtotime($lt['ngay_di']))); ?>
