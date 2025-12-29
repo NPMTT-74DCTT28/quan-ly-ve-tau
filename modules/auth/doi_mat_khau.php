@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($mat_khau_cu) || empty($mat_khau_moi) || empty($xac_nhan_mat_khau)) {
         $error = "Vui lòng điền đầy đủ thông tin.";
     } elseif ($mat_khau_moi !== $xac_nhan_mat_khau) {
-        $error = "Mật khẩu mới và xác nhận mật khẩu không khớp.";
+        $error = "Mật khẩu xác nhận không trùng khớp.";
     } elseif (strlen($mat_khau_moi) < 6) {
         $error = "Mật khẩu mới phải có ít nhất 6 ký tự.";
     } else {
