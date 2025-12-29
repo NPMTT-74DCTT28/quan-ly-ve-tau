@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 25, 2025 at 04:56 PM
+-- Generation Time: Dec 29, 2025 at 01:11 PM
 -- Server version: 8.4.7
 -- PHP Version: 8.5.0
 
@@ -39,7 +39,19 @@ CREATE TABLE IF NOT EXISTS `ga_tau` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `ma_ga` (`ma_ga`),
   UNIQUE KEY `ten_ga` (`ten_ga`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `ga_tau`
+--
+
+INSERT INTO `ga_tau` (`id`, `ma_ga`, `ten_ga`, `dia_chi`, `thanh_pho`) VALUES
+(1, 'HN', 'Ga Hà Nội', '120 Lê Duẩn, Hoàn Kiếm', 'Hà Nội'),
+(2, 'DN', 'Ga Đà Nẵng', '202 Hải Phòng, Thanh Khê', 'Đà Nẵng'),
+(3, 'SG', 'Ga Sài Gòn', '1 Nguyễn Thông, Quận 3', 'TP. Hồ Chí Minh'),
+(4, 'HUE', 'Ga Huế', '2 Bùi Thị Xuân', 'Thừa Thiên Huế'),
+(5, 'NT', 'Ga Nha Trang', '17 Thái Nguyên', 'Khánh Hòa'),
+(6, 'VINH', 'Ga Vinh', '1 Lệ Ninh', 'Nghệ An');
 
 -- --------------------------------------------------------
 
@@ -55,7 +67,27 @@ CREATE TABLE IF NOT EXISTS `ghe` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_ghe_trong_toa` (`so_ghe`,`id_toa_tau`),
   KEY `id_toa_tau` (`id_toa_tau`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `ghe`
+--
+
+INSERT INTO `ghe` (`id`, `so_ghe`, `id_toa_tau`) VALUES
+(1, '1A', 1),
+(2, '1B', 1),
+(3, '2A', 1),
+(4, '2B', 1),
+(5, '3A', 1),
+(6, '3B', 1),
+(11, 'C1', 3),
+(12, 'C2', 3),
+(13, 'C3', 3),
+(14, 'C4', 3),
+(7, 'G1', 2),
+(8, 'G2', 2),
+(9, 'G3', 2),
+(10, 'G4', 2);
 
 -- --------------------------------------------------------
 
@@ -75,7 +107,16 @@ CREATE TABLE IF NOT EXISTS `khach_hang` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `sdt` (`sdt`),
   UNIQUE KEY `cccd` (`cccd`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `khach_hang`
+--
+
+INSERT INTO `khach_hang` (`id`, `cccd`, `ho_ten`, `ngay_sinh`, `gioi_tinh`, `sdt`, `dia_chi`) VALUES
+(1, '001090000001', 'Phạm Khách Nam', '1985-02-10', 'Nam', '0912345678', '100 Cầu Giấy, Hà Nội'),
+(2, '001090000002', 'Nguyễn Khách Nữ', '1992-11-20', 'Nữ', '0987654321', '200 Điện Biên Phủ, TP.HCM'),
+(3, '001090000003', 'Lê Khách Khác', '2000-01-01', 'Khác', '0999888777', '300 Nguyễn Văn Linh, Đà Nẵng');
 
 -- --------------------------------------------------------
 
@@ -96,7 +137,17 @@ CREATE TABLE IF NOT EXISTS `lich_trinh` (
   UNIQUE KEY `unique_tau_schedule` (`id_tau`,`ngay_di`),
   UNIQUE KEY `ma_lich_trinh` (`ma_lich_trinh`),
   KEY `id_tuyen_duong` (`id_tuyen_duong`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `lich_trinh`
+--
+
+INSERT INTO `lich_trinh` (`id`, `ma_lich_trinh`, `id_tau`, `id_tuyen_duong`, `ngay_di`, `ngay_den`, `trang_thai`) VALUES
+(1, 'LT-SE1-001', 1, 1, '2025-05-01 06:00:00', '2025-05-02 12:00:00', 'Chờ'),
+(2, 'LT-SE2-001', 2, 2, '2025-04-29 19:00:00', '2025-04-30 08:00:00', 'Đang chạy'),
+(3, 'LT-TN1-OLD', 3, 2, '2024-12-01 08:00:00', '2024-12-01 20:00:00', 'Hoàn thành'),
+(4, 'LT-QB1-HUY', 4, 4, '2025-05-05 07:00:00', '2025-05-05 14:00:00', 'Hủy');
 
 -- --------------------------------------------------------
 
@@ -111,7 +162,17 @@ CREATE TABLE IF NOT EXISTS `loai_toa` (
   `he_so_gia` decimal(3,2) DEFAULT '1.00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `ten_loai` (`ten_loai`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `loai_toa`
+--
+
+INSERT INTO `loai_toa` (`id`, `ten_loai`, `he_so_gia`) VALUES
+(1, 'Ngồi cứng', 1.00),
+(2, 'Ngồi mềm điều hòa', 1.20),
+(3, 'Giường nằm khoang 6', 1.50),
+(4, 'Giường nằm khoang 4', 1.80);
 
 -- --------------------------------------------------------
 
@@ -135,15 +196,16 @@ CREATE TABLE IF NOT EXISTS `nhan_vien` (
   UNIQUE KEY `ma_nhan_vien` (`ma_nhan_vien`),
   UNIQUE KEY `sdt` (`sdt`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `nhan_vien`
 --
 
 INSERT INTO `nhan_vien` (`id`, `ma_nhan_vien`, `mat_khau`, `ho_ten`, `ngay_sinh`, `gioi_tinh`, `sdt`, `email`, `dia_chi`, `vai_tro`) VALUES
-(1, 'ADMIN', '$2a$12$gmkjs/CePmv8B6L684vWD.ytns6H4aoo4EXuFcVMAfWD1iV586QzW', 'Nguyễn Văn A', '2000-01-01', 'Nam', '0321456987', NULL, 'TP. Hồ Chí Minh', 'Quản trị viên'),
-(2, 'NV001', '$2a$12$XUDz5TLpGqBa8LeDQfFIUurqjNF2S6GBE4Y/rS3uXhHT8NGALzcxu', 'Lê Thị B', '2000-12-31', 'Nữ', '0123456789', NULL, 'Hà Nội', 'Nhân viên');
+(1, 'ADMIN', '$2a$12$gmkjs/CePmv8B6L684vWD.ytns6H4aoo4EXuFcVMAfWD1iV586QzW', 'Nguyễn Quản Trị', '1990-01-01', 'Nam', '0909000111', 'admin@tauhoa.vn', 'Hà Nội', 'Quản trị viên'),
+(2, 'NV001', '$2a$12$XUDz5TLpGqBa8LeDQfFIUurqjNF2S6GBE4Y/rS3uXhHT8NGALzcxu', 'Trần Thu Ngân', '2000-05-15', 'Nữ', '0909000222', 'ngan.tt@tauhoa.vn', 'Đà Nẵng', 'Nhân viên'),
+(3, 'NV002', '$2a$12$XUDz5TLpGqBa8LeDQfFIUurqjNF2S6GBE4Y/rS3uXhHT8NGALzcxu', 'Lê Văn Soát Vé', '1995-08-20', 'Nam', '0909000333', 'soat.lv@tauhoa.vn', 'TP.HCM', 'Nhân viên');
 
 -- --------------------------------------------------------
 
@@ -158,7 +220,17 @@ CREATE TABLE IF NOT EXISTS `tau` (
   `ten_tau` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'VD: Tàu Thống Nhất SE1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `ma_tau` (`ma_tau`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tau`
+--
+
+INSERT INTO `tau` (`id`, `ma_tau`, `ten_tau`) VALUES
+(1, 'SE1', 'Tàu Thống Nhất SE1 (Nhanh)'),
+(2, 'SE2', 'Tàu Thống Nhất SE2 (Nhanh)'),
+(3, 'TN1', 'Tàu Thống Nhất TN1 (Thường)'),
+(4, 'QB1', 'Tàu Quảng Bình Express');
 
 -- --------------------------------------------------------
 
@@ -176,7 +248,17 @@ CREATE TABLE IF NOT EXISTS `toa_tau` (
   UNIQUE KEY `unique_toa_trong_tau` (`ma_toa`,`id_tau`),
   KEY `id_tau` (`id_tau`),
   KEY `id_loai_toa` (`id_loai_toa`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `toa_tau`
+--
+
+INSERT INTO `toa_tau` (`id`, `ma_toa`, `id_tau`, `id_loai_toa`) VALUES
+(1, 'Toa 1', 1, 2),
+(2, 'Toa 2', 1, 4),
+(3, 'Toa 3', 1, 1),
+(4, 'Toa 1', 2, 2);
 
 -- --------------------------------------------------------
 
@@ -197,7 +279,17 @@ CREATE TABLE IF NOT EXISTS `tuyen_duong` (
   UNIQUE KEY `ma_tuyen` (`ma_tuyen`),
   UNIQUE KEY `unique_route` (`id_ga_di`,`id_ga_den`),
   KEY `id_ga_den` (`id_ga_den`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tuyen_duong`
+--
+
+INSERT INTO `tuyen_duong` (`id`, `ma_tuyen`, `ten_tuyen`, `id_ga_di`, `id_ga_den`, `khoang_cach_km`, `gia_co_ban`) VALUES
+(1, 'HN-SG', 'Hà Nội - Sài Gòn', 1, 3, 1726, 1000000.00),
+(2, 'HN-DN', 'Hà Nội - Đà Nẵng', 1, 2, 791, 500000.00),
+(3, 'SG-NT', 'Sài Gòn - Nha Trang', 3, 5, 411, 300000.00),
+(4, 'HN-VINH', 'Hà Nội - Vinh', 1, 6, 319, 200000.00);
 
 -- --------------------------------------------------------
 
@@ -222,7 +314,15 @@ CREATE TABLE IF NOT EXISTS `ve_tau` (
   KEY `id_khach_hang` (`id_khach_hang`),
   KEY `id_ghe` (`id_ghe`),
   KEY `id_nhan_vien` (`id_nhan_vien`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `ve_tau`
+--
+
+INSERT INTO `ve_tau` (`id`, `ma_ve`, `id_khach_hang`, `id_lich_trinh`, `id_ghe`, `id_nhan_vien`, `ngay_dat`, `gia_ve`, `trang_thai`) VALUES
+(1, 'VE-250501-001', 1, 1, 1, 2, '2025-12-29 20:08:42', 1200000.00, 'Đã thanh toán'),
+(2, 'VE-250501-002', 2, 1, 2, 2, '2025-12-29 20:08:42', 1200000.00, 'Đã thanh toán');
 
 --
 -- Constraints for dumped tables
