@@ -36,7 +36,11 @@
                                 Cập nhật thông tin
                             </a>
                         </li>
-                        <li><a href="<?php echo BASE_URL ?>modules/auth/doi_mat_khau.php">Đổi mật khẩu</a></li>
+                        <li>
+                            <a href="<?php echo BASE_URL ?>modules/auth/doi_mat_khau.php?id=<?php echo $_SESSION['user']['id'] ?>">
+                                Đổi mật khẩu
+                            </a>
+                        </li>
                         <li>
                             <a href="<?php echo BASE_URL ?>modules/auth/dang_xuat.php"
                                 onclick="return confirm('Bạn có chắc chắn muốn đăng xuất không?');"
