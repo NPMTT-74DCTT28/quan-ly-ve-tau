@@ -43,8 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([$ma_nv, $hashed_password, $ho_ten, $ngay_sinh, $gioi_tinh, $sdt, $email, $dia_chi, $vai_tro]);
 
-                echo "<script>alert('Thêm thành công!'); window.location.href='index.php';</script>";
-                exit();
+                $success = "Thêm nhân viên thành công!";
             }
         } catch (PDOException $e) {
             $error = "Lỗi hệ thống: " . $e->getMessage();
@@ -61,6 +60,12 @@ require_once __DIR__ . '/../../includes/header.php';
     <?php if ($error): ?>
         <div style="color: red; background: #f8d7da; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
             <?php echo $error; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($success): ?>
+        <div style="color: green; background: #99FF99; padding: 10px; margin-bottom: 15px; border-radius: 4px;">
+            <?php echo $success; ?>
         </div>
     <?php endif; ?>
 

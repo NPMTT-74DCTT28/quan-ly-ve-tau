@@ -151,6 +151,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <button type="submit" class="btn-submit">Đăng nhập</button>
+
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="<?php echo BASE_URL ?>" style="color: #666; text-decoration: none; font-size: 14px;">Quay lại trang chủ</a>
+            </div>
         </form>
     </div>
 
