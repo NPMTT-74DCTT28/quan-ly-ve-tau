@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 29, 2025 at 01:11 PM
+-- Generation Time: Dec 31, 2025 at 06:14 AM
 -- Server version: 8.4.7
 -- PHP Version: 8.5.0
 
@@ -22,6 +22,97 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `quan_ly_ban_ve_tau` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `quan_ly_ban_ve_tau`;
+
+DELIMITER $$
+--
+-- Procedures
+--
+DROP PROCEDURE IF EXISTS `sp_ThongKeDoanhSoNhanVien`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ThongKeDoanhSoNhanVien` (IN `p_thang` INT, IN `p_nam` INT)   BEGIN
+    SELECT 
+        nv.ma_nhan_vien,
+        nv.ho_ten,
+        COUNT(vt.id) as so_ve_ban,
+        COALESCE(SUM(vt.gia_ve), 0) as doanh_so
+    FROM nhan_vien nv
+    LEFT JOIN ve_tau vt ON nv.id = vt.id_nhan_vien 
+        AND MONTH(vt.ngay_dat) = p_thang 
+        AND YEAR(vt.ngay_dat) = p_nam
+        AND vt.trang_thai = 'Đã thanh toán'
+    WHERE nv.vai_tro = 'Nhân viên'
+    GROUP BY nv.id
+    ORDER BY doanh_so DESC;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_ThongKeDoanhThuTheoNgay`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ThongKeDoanhThuTheoNgay` (IN `p_ngay_bat_dau` DATE, IN `p_ngay_ket_thuc` DATE)   BEGIN
+    SELECT 
+        DATE(ngay_dat) as ngay, 
+        COALESCE(SUM(gia_ve), 0) as doanh_thu,
+        COUNT(id) as so_ve_ban
+    FROM ve_tau
+    WHERE DATE(ngay_dat) BETWEEN p_ngay_bat_dau AND p_ngay_ket_thuc
+      AND trang_thai = 'Đã thanh toán' 
+    GROUP BY DATE(ngay_dat)
+    ORDER BY ngay ASC;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_ThongKeDoanhThuTheoTuyen`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ThongKeDoanhThuTheoTuyen` (IN `p_ngay_bat_dau` DATE, IN `p_ngay_ket_thuc` DATE)   BEGIN
+    SELECT 
+        td.ten_tuyen,
+        COALESCE(SUM(vt.gia_ve), 0) as doanh_thu
+    FROM ve_tau vt
+    JOIN lich_trinh lt ON vt.id_lich_trinh = lt.id
+    JOIN tuyen_duong td ON lt.id_tuyen_duong = td.id
+    WHERE DATE(vt.ngay_dat) BETWEEN p_ngay_bat_dau AND p_ngay_ket_thuc
+      AND vt.trang_thai = 'Đã thanh toán'
+    GROUP BY td.ten_tuyen
+    ORDER BY doanh_thu DESC;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_ThongKeKhachHangVIP`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ThongKeKhachHangVIP` (IN `p_limit` INT)   BEGIN
+    SELECT 
+        kh.ho_ten,
+        kh.sdt,
+        COUNT(vt.id) as so_ve_da_mua,
+        COALESCE(SUM(vt.gia_ve), 0) as tong_tien_chi_tieu
+    FROM khach_hang kh
+    JOIN ve_tau vt ON kh.id = vt.id_khach_hang
+    WHERE vt.trang_thai = 'Đã thanh toán'
+    GROUP BY kh.id
+    ORDER BY tong_tien_chi_tieu DESC
+    LIMIT p_limit;
+END$$
+
+DROP PROCEDURE IF EXISTS `sp_ThongKeTyLeLapDay`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ThongKeTyLeLapDay` (IN `p_ngay_bat_dau` DATE, IN `p_ngay_ket_thuc` DATE)   BEGIN
+    SELECT 
+        lt.ma_lich_trinh,
+        t.ten_tau,
+        lt.ngay_di,
+        -- Đếm tổng số ghế của tàu (Dựa vào bảng ghe -> toa -> tau)
+        (SELECT COUNT(g.id) 
+         FROM ghe g 
+         JOIN toa_tau tt ON g.id_toa_tau = tt.id 
+         WHERE tt.id_tau = t.id) AS tong_so_ghe,
+        -- Đếm số vé đã bán (trừ vé hủy)
+        COUNT(vt.id) as ve_da_ban,
+        -- Tính phần trăm
+        ROUND((COUNT(vt.id) * 100.0 / NULLIF((SELECT COUNT(g.id) 
+                                              FROM ghe g 
+                                              JOIN toa_tau tt ON g.id_toa_tau = tt.id 
+                                              WHERE tt.id_tau = t.id), 0)), 2) as ty_le_lap_day
+    FROM lich_trinh lt
+    JOIN tau t ON lt.id_tau = t.id
+    LEFT JOIN ve_tau vt ON lt.id = vt.id_lich_trinh AND vt.trang_thai = 'Đã thanh toán'
+    WHERE DATE(lt.ngay_di) BETWEEN p_ngay_bat_dau AND p_ngay_ket_thuc
+    GROUP BY lt.id, t.id
+    ORDER BY ty_le_lap_day DESC;
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -185,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `nhan_vien` (
   `id` int NOT NULL AUTO_INCREMENT,
   `ma_nhan_vien` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `mat_khau` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ho_ten` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ho_ten` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `ngay_sinh` date NOT NULL DEFAULT (curdate()),
   `gioi_tinh` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `sdt` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -203,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `nhan_vien` (
 --
 
 INSERT INTO `nhan_vien` (`id`, `ma_nhan_vien`, `mat_khau`, `ho_ten`, `ngay_sinh`, `gioi_tinh`, `sdt`, `email`, `dia_chi`, `vai_tro`) VALUES
-(1, 'ADMIN', '$2a$12$gmkjs/CePmv8B6L684vWD.ytns6H4aoo4EXuFcVMAfWD1iV586QzW', 'Nguyễn Quản Trị', '1990-01-01', 'Nam', '0909000111', 'admin@tauhoa.vn', 'Hà Nội', 'Quản trị viên'),
+(1, 'ADMIN', '$2a$12$uwmhYfudImLxsOsD8JvjWOZ8benmh03m1oHdjy7nVYyUXa.CLr.gq', 'Nguyễn Quản Trị', '1990-01-01', 'Nam', '0909000111', 'admin@tauhoa.vn', 'Hà Nội', 'Quản trị viên'),
 (2, 'NV001', '$2a$12$XUDz5TLpGqBa8LeDQfFIUurqjNF2S6GBE4Y/rS3uXhHT8NGALzcxu', 'Trần Thu Ngân', '2000-05-15', 'Nữ', '0909000222', 'ngan.tt@tauhoa.vn', 'Đà Nẵng', 'Nhân viên'),
 (3, 'NV002', '$2a$12$XUDz5TLpGqBa8LeDQfFIUurqjNF2S6GBE4Y/rS3uXhHT8NGALzcxu', 'Lê Văn Soát Vé', '1995-08-20', 'Nam', '0909000333', 'soat.lv@tauhoa.vn', 'TP.HCM', 'Nhân viên');
 
