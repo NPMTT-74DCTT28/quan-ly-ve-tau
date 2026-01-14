@@ -22,7 +22,7 @@ function isAdmin()
     if (!isset($_SESSION['user'])) {
         return false;
     }
-    if (isset($_SESSION['user']['vai_tro']) && $_SESSION['user']['vai_tro'] === ROLE_ADMIN) {
+    if (isset($_SESSION['user']) && $_SESSION['user']['vai_tro'] === ROLE_ADMIN) {
         return true;
     }
     return false;
