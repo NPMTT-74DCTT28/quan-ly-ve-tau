@@ -18,9 +18,6 @@ $khach_hang_list = $conn->query($sql_khach_hang)->fetchAll();
 $sql_lich_trinh = "SELECT id, ma_lich_trinh, ngay_di FROM lich_trinh ORDER BY ngay_di";
 $lich_trinh_list = $conn->query($sql_lich_trinh)->fetchAll();
 
-$sql_nhan_vien = "SELECT id, ho_ten FROM nhan_vien ORDER BY ho_ten";
-$nhan_vien_list = $conn->query($sql_nhan_vien)->fetchAll();
-
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $stmt = $conn->prepare("SELECT * FROM ve_tau WHERE id = ?");
@@ -36,7 +33,6 @@ if (isset($_GET['id'])) {
     $id_khach_hang = $ve_tau['id_khach_hang'];
     $id_lich_trinh = $ve_tau['id_lich_trinh'];
     $id_ghe = $ve_tau['id_ghe'];
-    $id_nhan_vien = $ve_tau['id_nhan_vien'];
     $gia_ve = $ve_tau['gia_ve'];
     $trang_thai = $ve_tau['trang_thai'];
 
@@ -63,7 +59,6 @@ if (isset($_POST['btnEdit'])) {
     $id_khach_hang = $_POST['id_khach_hang'];
     $id_lich_trinh = $_POST['id_lich_trinh'];
     $id_ghe = $_POST['id_ghe'];
-    $id_nhan_vien = $_POST['id_nhan_vien'];
     $gia_ve = $_POST['gia_ve'];
     $trang_thai = $_POST['trang_thai'];
 
@@ -81,10 +76,10 @@ if (isset($_POST['btnEdit'])) {
         if ($stmt_check_ghe->rowCount() > 0) {
             $error_message = "Ghế này đã được đặt!";
         } else {
-            $sql_update = "UPDATE ve_tau SET ma_ve=?, id_khach_hang=?, id_lich_trinh=?, id_ghe=?, id_nhan_vien=?, gia_ve=?, trang_thai=? WHERE id=?";
+            $sql_update = "UPDATE ve_tau SET ma_ve=?, id_khach_hang=?, id_lich_trinh=?, id_ghe=?, gia_ve=?, trang_thai=? WHERE id=?";
             $stmt_update = $conn->prepare($sql_update);
 
-            if ($stmt_update->execute([$ma_ve, $id_khach_hang, $id_lich_trinh, $id_ghe, $id_nhan_vien, $gia_ve, $trang_thai, $id])) {
+            if ($stmt_update->execute([$ma_ve, $id_khach_hang, $id_lich_trinh, $id_ghe, $gia_ve, $trang_thai, $id])) {
                 echo "<script>alert('Cập nhật thành công!'); window.location='index.php';</script>";
                 exit();
             } else {
@@ -127,13 +122,11 @@ if (isset($_POST['btnEdit'])) {
                 </div>
 
                 <div class="form-group mb-20">
-                    <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Nhân viên:</label>
-                    <select class="form-control" name="id_nhan_vien" required style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
-                        <?php foreach ($nhan_vien_list as $nv): ?>
-                            <option value="<?php echo $nv['id']; ?>" <?php echo $id_nhan_vien == $nv['id'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($nv['ho_ten']); ?>
-                            </option>
-                        <?php endforeach; ?>
+                    <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Nhân viên bán vé:</label>
+                    <select class="form-control" name="id_nhan_vien" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;" disabled>
+                        <option value="<?php echo $id_nhan_vien = $_SESSION['user']['id']; ?>">
+                            <?php echo htmlspecialchars($_SESSION['user']['ho_ten']); ?>
+                        </option>
                     </select>
                 </div>
             </div>

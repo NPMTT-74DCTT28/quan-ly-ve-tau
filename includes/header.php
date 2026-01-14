@@ -24,11 +24,33 @@
             <li><a href="<?php echo BASE_URL ?>modules/lich-trinh">Lịch trình</a></li>
             <li><a href="<?php echo BASE_URL ?>modules/khach-hang">Khách hàng</a></li>
             <li><a href="<?php echo BASE_URL ?>modules/ve-tau">Vé tàu</a></li>
+            <li class="dropdown-container">
+                <a href="javascript:void(0)" class="dropdown-trigger">
+                    Thống kê<span class="arrow"> ▼</span>
+                </a>
+                <ul class="personal-menu">
+                    <li>
+                        <a href="<?php echo BASE_URL ?>modules/thong-ke/doanh-thu-theo-ngay">Doanh thu theo ngày</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo BASE_URL ?>modules/thong-ke/doanh-thu-theo-tuyen">Doanh thu theo tuyến</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo BASE_URL ?>modules/thong-ke/ty-le-lap-day">Tỷ lệ lấp đầy tàu</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo BASE_URL ?>modules/thong-ke/khach-hang-vip">Khách hàng VIP</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo BASE_URL ?>modules/thong-ke/doanh-so">Doanh số bán hàng</a>
+                    </li>
+                </ul>
+            </li>
 
             <?php if (isset($_SESSION['user'])): ?>
                 <li class="dropdown-container">
                     <a href="javascript:void(0)" class="dropdown-trigger">
-                        Xin chào, <?php echo $_SESSION['user']['ho_ten'] ?> <span class="arrow">▼</span>
+                        Xin chào, <?php echo $_SESSION['user']['ho_ten'] ?> <span class="arrow"> ▼</span>
                     </a>
                     <ul class="personal-menu">
                         <li>

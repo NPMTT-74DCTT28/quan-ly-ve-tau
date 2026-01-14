@@ -6,12 +6,10 @@ require_once __DIR__ . '/modules/thong-ke/ThongKe.php';
 $thongKe = new ThongKe($db->getConnection());
 $doanhThu7Ngay = $thongKe->getDoanhThu7Ngay();
 
-// Chuẩn bị dữ liệu cho Chart.js
 $labels = [];
 $data = [];
 
 foreach ($doanhThu7Ngay as $item) {
-    // Format ngày sang dd/mm cho đẹp
     $labels[] = date('d/m', strtotime($item['ngay']));
     $data[] = $item['doanh_thu'];
 }
@@ -36,9 +34,8 @@ foreach ($doanhThu7Ngay as $item) {
     <?php if (isAdmin()): ?>
         const ctx = document.getElementById('revenueChart').getContext('2d');
         const revenueChart = new Chart(ctx, {
-            type: 'line', // Loại biểu đồ: đường
+            type: 'line',
             data: {
-                // Dữ liệu từ PHP in vào đây
                 labels: <?php echo json_encode($labels); ?>,
                 datasets: [{
                     label: 'Doanh thu (VNĐ)',
@@ -47,7 +44,7 @@ foreach ($doanhThu7Ngay as $item) {
                     backgroundColor: 'rgba(74, 111, 165, 0.2)',
                     borderWidth: 2,
                     fill: true,
-                    tension: 0.3 // Làm mềm đường cong
+                    tension: 0.3
                 }]
             },
             options: {

@@ -143,12 +143,7 @@ require_once __DIR__ . '/../../includes/header.php';
         <button type="submit" style="background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
             Lưu thay đổi
         </button>
-
-        <?php if (isAdmin()): ?>
-            <a href="index.php" style="margin-left: 10px; color: #666; text-decoration: none;">Quay lại danh sách</a>
-        <?php else: ?>
-            <a href="<?php echo BASE_URL; ?>" style="margin-left: 10px; color: #666; text-decoration: none;">Về trang chủ</a>
-        <?php endif; ?>
+        <a href="<?php echo BASE_URL; ?>" style="margin-left: 10px; color: #666; text-decoration: none;">Về trang chủ</a>
 
     </form>
 </div>
