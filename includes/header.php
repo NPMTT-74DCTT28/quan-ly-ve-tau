@@ -14,39 +14,18 @@
             <img src="<?php echo BASE_URL ?>assets/images/logo.png" alt="logo" class="logo">
         </a>
         <ul class="menu">
-            <li><a href="<?php echo BASE_URL ?>modules/nhan-vien">Nhân viên</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/tau">Tàu</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/loai-toa">Loại toa</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/ghe">Ghế</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/toa-tau">Toa tàu</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/ga-tau">Ga tàu</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/tuyen-duong">Tuyến đường</a></li>
+            <?php if (isAdmin()): ?>
+                <li><a href="<?php echo BASE_URL ?>modules/nhan-vien">Nhân viên</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/tau">Tàu</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/loai-toa">Loại toa</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/ghe">Ghế</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/toa-tau">Toa tàu</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/ga-tau">Ga tàu</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/tuyen-duong">Tuyến đường</a></li>
+            <?php endif ?>
             <li><a href="<?php echo BASE_URL ?>modules/lich-trinh">Lịch trình</a></li>
             <li><a href="<?php echo BASE_URL ?>modules/khach-hang">Khách hàng</a></li>
             <li><a href="<?php echo BASE_URL ?>modules/ve-tau">Vé tàu</a></li>
-            <li class="dropdown-container">
-                <a href="javascript:void(0)" class="dropdown-trigger">
-                    Thống kê<span class="arrow"> ▼</span>
-                </a>
-                <ul class="personal-menu">
-                    <li>
-                        <a href="<?php echo BASE_URL ?>modules/thong-ke/doanh-thu-theo-ngay">Doanh thu theo ngày</a>
-                    </li>
-                    <li>
-                        <a href="<?php echo BASE_URL ?>modules/thong-ke/doanh-thu-theo-tuyen">Doanh thu theo tuyến</a>
-                    </li>
-                    <li>
-                        <a href="<?php echo BASE_URL ?>modules/thong-ke/ty-le-lap-day">Tỷ lệ lấp đầy tàu</a>
-                    </li>
-                    <li>
-                        <a href="<?php echo BASE_URL ?>modules/thong-ke/khach-hang-vip">Khách hàng VIP</a>
-                    </li>
-                    <li>
-                        <a href="<?php echo BASE_URL ?>modules/thong-ke/doanh-so">Doanh số bán hàng</a>
-                    </li>
-                </ul>
-            </li>
-
             <?php if (isset($_SESSION['user'])): ?>
                 <li class="dropdown-container">
                     <a href="javascript:void(0)" class="dropdown-trigger">
