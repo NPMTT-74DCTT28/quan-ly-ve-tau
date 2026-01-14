@@ -14,21 +14,22 @@
             <img src="<?php echo BASE_URL ?>assets/images/logo.png" alt="logo" class="logo">
         </a>
         <ul class="menu">
-            <li><a href="<?php echo BASE_URL ?>modules/nhan-vien">Nhân viên</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/tau">Tàu</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/loai-toa">Loại toa</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/ghe">Ghế</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/toa-tau">Toa tàu</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/ga-tau">Ga tàu</a></li>
-            <li><a href="<?php echo BASE_URL ?>modules/tuyen-duong">Tuyến đường</a></li>
+            <?php if (isAdmin()): ?>
+                <li><a href="<?php echo BASE_URL ?>modules/nhan-vien">Nhân viên</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/tau">Tàu</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/loai-toa">Loại toa</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/ghe">Ghế</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/toa-tau">Toa tàu</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/ga-tau">Ga tàu</a></li>
+                <li><a href="<?php echo BASE_URL ?>modules/tuyen-duong">Tuyến đường</a></li>
+            <?php endif ?>
             <li><a href="<?php echo BASE_URL ?>modules/lich-trinh">Lịch trình</a></li>
             <li><a href="<?php echo BASE_URL ?>modules/khach-hang">Khách hàng</a></li>
             <li><a href="<?php echo BASE_URL ?>modules/ve-tau">Vé tàu</a></li>
-
             <?php if (isset($_SESSION['user'])): ?>
                 <li class="dropdown-container">
                     <a href="javascript:void(0)" class="dropdown-trigger">
-                        Xin chào, <?php echo $_SESSION['user']['ho_ten'] ?> <span class="arrow">▼</span>
+                        Xin chào, <?php echo $_SESSION['user']['ho_ten'] ?> <span class="arrow"> ▼</span>
                     </a>
                     <ul class="personal-menu">
                         <li>

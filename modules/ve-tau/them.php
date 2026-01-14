@@ -18,10 +18,6 @@ $sql_lich_trinh = "SELECT id, ma_lich_trinh, ngay_di FROM lich_trinh WHERE ngay_
 $stmt_lich_trinh = $conn->query($sql_lich_trinh);
 $lich_trinh_list = $stmt_lich_trinh->fetchAll();
 
-$sql_nhan_vien = "SELECT id, ho_ten FROM nhan_vien ORDER BY ho_ten";
-$stmt_nhan_vien = $conn->query($sql_nhan_vien);
-$nhan_vien_list = $stmt_nhan_vien->fetchAll();
-
 // Biến lưu dữ liệu và thông báo
 $ma_ve = $id_khach_hang = $id_lich_trinh = $id_ghe = $id_nhan_vien = $gia_ve = $trang_thai = '';
 $show_success = $show_error = false;
@@ -85,8 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
                 $error_message = "Ghế này vừa được đặt bởi người khác!";
                 $show_error = true;
             } else {
-                $sql_insert = "INSERT INTO ve_tau (ma_ve, id_khach_hang, id_lich_trinh, id_ghe, id_nhan_vien, gia_ve, trang_thai, ngay_dat) 
-                               VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+                $sql_insert = "INSERT INTO ve_tau (ma_ve, id_khach_hang, id_lich_trinh, id_ghe, id_nhan_vien, gia_ve, trang_thai) 
+                               VALUES (?, ?, ?, ?, ?, ?, ?)";
                 $stmt_insert = $conn->prepare($sql_insert);
 
                 if ($stmt_insert->execute([$ma_ve, $id_khach_hang, $id_lich_trinh, $id_ghe, $id_nhan_vien, $gia_ve, $trang_thai])) {
@@ -144,13 +140,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
 
                 <div class="form-group mb-20">
                     <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Nhân viên bán vé (*):</label>
-                    <select class="form-control" name="id_nhan_vien" required style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
-                        <option value="">-- Chọn nhân viên --</option>
-                        <?php foreach ($nhan_vien_list as $nv): ?>
-                            <option value="<?php echo $nv['id']; ?>" <?php echo $id_nhan_vien == $nv['id'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($nv['ho_ten']); ?>
-                            </option>
-                        <?php endforeach; ?>
+                    <select class="form-control" name="id_nhan_vien" required style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;" disabled>
+                        <option value="<?php echo $id_nhan_vien = $_SESSION['user']['id']; ?>">
+                            <?php echo htmlspecialchars($_SESSION['user']['ho_ten']); ?>
+                        </option>
                     </select>
                 </div>
             </div>
@@ -176,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
                 <div class="form-group mb-20">
                     <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Lịch trình (*):</label>
                     <select class="form-control" name="id_lich_trinh" id="id_lich_trinh" required onchange="this.form.submit()" style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
-                        <option value="">-- Chọn lịch trình --</option>
+                        <option value="">-- Chọn lịch trình để hiện ghế trống --</option>
                         <?php foreach ($lich_trinh_list as $lt): ?>
                             <option value="<?php echo $lt['id']; ?>" <?php echo $id_lich_trinh == $lt['id'] ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($lt['ma_lich_trinh'] . ' - ' . date('d/m/Y H:i', strtotime($lt['ngay_di']))); ?>
