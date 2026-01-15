@@ -16,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Vui lòng điền đầy đủ thông tin.";
     } elseif ($mat_khau_moi !== $xac_nhan_mat_khau) {
         $error = "Mật khẩu xác nhận không trùng khớp.";
-    } elseif (strlen($mat_khau_moi) < 6) {
-        $error = "Mật khẩu mới phải có ít nhất 6 ký tự.";
+    } elseif (!preg_match(STRONG_PASSWD, $mat_khau_moi, $matches, PREG_OFFSET_CAPTURE, 0)) {
+        $error = "Mật khẩu phải từ 8-20 ký tự, bao gồm ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số, 1 ký tự đặc biệt và không chứa khoảng trắng.";
     } else {
         $stmt_check = $conn->prepare("SELECT mat_khau FROM nhan_vien WHERE id = ?");
         $stmt_check->execute([$user_id]);
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 window.location.href = '" . BASE_URL . "modules/auth/dang_nhap.php';</script>";
                 exit();
             } else {
-                $error = "Lỗi hệ thống: Không thể cập nhật mật khẩu.";
+                $error = "Lỗi hệ thống: Không thể đổi mật khẩu.";
             }
         }
     }
