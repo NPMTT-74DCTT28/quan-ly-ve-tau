@@ -28,6 +28,13 @@ function isAdmin()
     return false;
 }
 
+function requireLogin() {
+    if (!isset($_SESSION['user'])) {
+        header("Location: " . BASE_URL . "modules/auth/dang_nhap.php");
+        exit();
+    }
+}
+
 function requireAdmin()
 {
     if (!isAdmin()) {

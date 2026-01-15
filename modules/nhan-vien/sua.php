@@ -1,10 +1,8 @@
 <?php
 require_once __DIR__ . '/../../bootstrap.php';
 
-if (!isset($_SESSION['user'])) {
-    header("Location: " . BASE_URL . "modules/auth/dang_nhap.php");
-    exit();
-}
+requireLogin();
+requireAdmin();
 
 $current_user_id = $_SESSION['user']['id'];
 $id = $_GET['id'] ?? $current_user_id;

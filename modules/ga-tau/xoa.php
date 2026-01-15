@@ -2,6 +2,7 @@
 // 1. Nhúng file cấu hình và kết nối
 require_once __DIR__ . '/../../bootstrap.php';
 
+requireLogin();
 requireAdmin();
 
 // 2. Khởi tạo kết nối từ đối tượng $db

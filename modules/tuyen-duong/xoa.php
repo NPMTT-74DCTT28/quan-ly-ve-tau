@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../bootstrap.php';
 
+requireLogin();
 requireAdmin();
 
 $conn = $db->getConnection();
