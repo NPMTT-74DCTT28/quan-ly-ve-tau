@@ -148,7 +148,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
             <div class="col-md-6" style="flex: 0 0 50%; max-width: 50%; padding-right: 15px; padding-left: 15px; box-sizing: border-box;">
                 <div class="form-group mb-20">
                     <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Giá vé (VNĐ) (*):</label>
-                    <input type="number" class="form-control" name="gia_ve" value="<?php echo htmlspecialchars($gia_ve); ?>" required min="0" placeholder="VD: 500000"
+                    <input type="number" class="form-control" name="gia_ve" id="gia_ve" disabled
+                        value="<?php echo htmlspecialchars($gia_ve); ?>" required min="0" placeholder="VD: 500000"
                         style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
                 </div>
 
@@ -227,6 +228,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
         </div>
     </form>
 </div>
+
+<script>
+document.querySelectorAll('.ghe-item').forEach(item => {
+    item.addEventListener('click', function() {
+        const idGhe = this.querySelector('input[name="id_ghe"]').value;
+        const idLichTrinh = document.getElementById('id_lich_trinh').value;
+
+        if (idGhe && idLichTrinh) {
+            fetch(`tinhtientudong.php?id_lich_trinh=${idLichTrinh}&id_ghe=${idGhe}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        
+                        document.querySelector('input[name="gia_ve"]').value = data.price;
+                    }
+                })
+                .catch(error => console.error('Lỗi:', error));
+        }
+    });
+});
+</script>
 
 <?php
 require_once '../../includes/footer.php';
