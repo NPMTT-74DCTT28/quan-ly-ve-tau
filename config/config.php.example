@@ -8,3 +8,7 @@ define('SITE_NAME', 'Hệ thống quản lý bán vé tàu');
 
 define('ROLE_ADMIN', 'Quản trị viên');
 define('ROLE_NHAN_VIEN', 'Nhân viên');
+
+define('STRONG_PASSWD', '/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*+=])(?=\\S+$).{8,20}$/');
+define('EMAIL_FORMAT', '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/');
+define('PHONE_NUM_FORMAT', '/^0\\d{9}$/');

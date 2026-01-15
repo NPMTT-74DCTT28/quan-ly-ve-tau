@@ -1,11 +1,7 @@
 <?php
 require_once __DIR__ . '/../../bootstrap.php';
 
-if (!isset($_SESSION['user'])) {
-    header("Location: " . BASE_URL . "modules/auth/dang_nhap.php");
-    exit();
-}
-
+requireLogin();
 requireAdmin();
 
 $conn = $db->getConnection();
@@ -197,15 +193,15 @@ require_once __DIR__ . '/../../includes/header.php';
                             </span>
                         </td>
                         <td class="action-links">
-                            <a href="sua.php?id=<?php echo $nv['id']; ?>&personal= <?php echo 'false' ?>" class="btn btn-warning">Sửa</a>
-
                             <?php if ($_SESSION['user']['id'] != $nv['id']): ?>
+                                <a href="sua.php?id=<?php echo $nv['id']; ?>&personal= <?php echo 'false' ?>" class="btn btn-warning">Sửa</a>
                                 <a href="xoa.php?id=<?php echo $nv['id']; ?>"
                                     class="btn btn-danger"
                                     onclick="return confirm('Bạn có chắc chắn muốn xóa nhân viên <?php echo $nv['ho_ten']; ?> không?');">
                                     Xóa
                                 </a>
                             <?php else: ?>
+                                <span class="btn" style="background:#ddd; cursor:not-allowed; padding:5px 10px; font-size:0.9em;">Sửa</span>
                                 <span class="btn" style="background:#ddd; cursor:not-allowed; padding:5px 10px; font-size:0.9em;">Xóa</span>
                             <?php endif; ?>
                         </td>

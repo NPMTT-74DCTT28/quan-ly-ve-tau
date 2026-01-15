@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($user && password_verify($mat_khau, $user['mat_khau'])) {
         session_start();
         $_SESSION['user'] = $user;
-        echo "<script> alert('Đăng nhập thành công!'); window.location.href = '" . BASE_URL . "';</script>";
+        header("Location: " . BASE_URL);
         exit();
     } else {
         $error_message = "Sai tên đăng nhập hoặc mật khẩu!";
@@ -151,6 +151,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <button type="submit" class="btn-submit">Đăng nhập</button>
+
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="<?php echo BASE_URL ?>" style="color: #666; text-decoration: none; font-size: 14px;">Quay lại trang chủ</a>
+            </div>
         </form>
     </div>
 

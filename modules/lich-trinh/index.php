@@ -2,10 +2,7 @@
 require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__ . '/../../includes/header.php';
 
-if (!isset($_SESSION['user'])) {
-    header("Location: " . BASE_URL . "modules/auth/dang_nhap.php");
-    exit();
-}
+requireLogin();
 
 $conn = $db->getConnection();
 
@@ -23,6 +20,7 @@ $tuyen_duong_list = $conn->query(
 /* =========================
    NHẬN GIÁ TRỊ TÌM KIẾM
 ========================= */
+$id              = $_POST['id'] ?? '';
 $ma_lich_trinh   = $_POST['ma_lich_trinh'] ?? '';
 $id_tau          = $_POST['id_tau'] ?? '';
 $id_tuyen_duong  = $_POST['id_tuyen_duong'] ?? '';
@@ -40,6 +38,10 @@ $sql = "SELECT l.*, t.ma_tau, t.ten_tau, td.ma_tuyen, td.ten_tuyen
         WHERE 1=1";
 $params = [];
 
+if ($id !== '' && is_numeric($id)) {
+    $sql .= " AND l.id = ?";
+    $params[] = $id;
+}
 if ($ma_lich_trinh !== '') {
     $sql .= " AND l.ma_lich_trinh LIKE ?";
     $params[] = "%$ma_lich_trinh%";
@@ -72,131 +74,181 @@ $stmt->execute($params);
 $data_search = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<div class="main-content">
-    <h1>QUẢN LÝ LỊCH TRÌNH</h1>
+<!DOCTYPE html>
+<html lang="vi">
 
-    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #e9ecef;">
-        <form method="post">
-            <div class="row" style="display: flex; flex-wrap: wrap; gap: 15px;">
-                <div style="flex: 1; min-width: 200px;">
-                    <label style="font-weight: 600; font-size: 14px; margin-bottom: 5px; display: block;">Tàu</label>
-                    <select class="form-control" name="id_tau" style="width: 100%; padding: 6px 10px; border: 1px solid #ced4da; border-radius: 4px;">
-                        <option value="">-- Tất cả --</option>
-                        <?php foreach ($tau_list as $tau): ?>
-                            <option value="<?= $tau['id'] ?>" <?= $id_tau == $tau['id'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($tau['ma_tau'] . ' - ' . $tau['ten_tau']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div style="flex: 1; min-width: 200px;">
-                    <label style="font-weight: 600; font-size: 14px; margin-bottom: 5px; display: block;">Tuyến đường</label>
-                    <select class="form-control" name="id_tuyen_duong" style="width: 100%; padding: 6px 10px; border: 1px solid #ced4da; border-radius: 4px;">
-                        <option value="">-- Tất cả --</option>
-                        <?php foreach ($tuyen_duong_list as $tuyen): ?>
-                            <option value="<?= $tuyen['id'] ?>" <?= $id_tuyen_duong == $tuyen['id'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($tuyen['ma_tuyen'] . ' - ' . $tuyen['ten_tuyen']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div style="flex: 1; min-width: 150px;">
-                    <label style="font-weight: 600; font-size: 14px; margin-bottom: 5px; display: block;">Ngày đi</label>
-                    <input type="date" class="form-control" name="ngay_di" value="<?= htmlspecialchars($ngay_di) ?>"
-                        style="width: 100%; padding: 6px 10px; border: 1px solid #ced4da; border-radius: 4px;">
-                </div>
-                <div style="flex: 1; min-width: 150px;">
-                    <label style="font-weight: 600; font-size: 14px; margin-bottom: 5px; display: block;">Ngày đến</label>
-                    <input type="date" class="form-control" name="ngay_den" value="<?= htmlspecialchars($ngay_den) ?>"
-                        style="width: 100%; padding: 6px 10px; border: 1px solid #ced4da; border-radius: 4px;">
-                </div>
-                <div style="flex: 1; min-width: 150px;">
-                    <label style="font-weight: 600; font-size: 14px; margin-bottom: 5px; display: block;">Trạng thái</label>
-                    <select class="form-control" name="trang_thai" style="width: 100%; padding: 6px 10px; border: 1px solid #ced4da; border-radius: 4px;">
-                        <option value="">Tất cả</option>
-                        <?php foreach (['Chưa chạy', 'Đang chạy', 'Đã hoàn thành', 'Hủy'] as $tt): ?>
-                            <option value="<?= $tt ?>" <?= $trang_thai == $tt ? 'selected' : '' ?>><?= $tt ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            </div>
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý lịch trình</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .container {
+            max-width: 1400px;
+            margin-top: 30px;
+        }
 
-            <div style="margin-top: 20px; text-align: center;">
-                <button type="submit" style="background: #0d6efd; color: white; padding: 8px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 0 5px;">
-                    <i class="bi bi-search"></i> Tìm kiếm
-                </button>
-                <a href="Add.php" style="background: #198754; color: white; padding: 8px 20px; border: none; border-radius: 4px; text-decoration: none; margin: 0 5px; display: inline-block;">
-                    <i class="bi bi-plus-circle"></i> Thêm mới
-                </a>
-                <a href="Export.php" style="background: #0dcaf0; color: white; padding: 8px 20px; border: none; border-radius: 4px; text-decoration: none; margin: 0 5px; display: inline-block;">
-                    <i class="bi bi-file-earmark-excel"></i> Xuất Excel
-                </a>
-                <a href="Import.php" style="background: #ffc107; color: #000; padding: 8px 20px; border: none; border-radius: 4px; text-decoration: none; margin: 0 5px; display: inline-block;">
-                    <i class="bi bi-upload"></i> Nhập Excel
-                </a>
-            </div>
-        </form>
-    </div>
+        .search-form,
+        .table-container {
+            background-color: #81aad3ff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+            margin-bottom: 30px;
+        }
 
-    <h3 style="text-align: center; margin-bottom: 20px; color: #34495e; font-size: 20px;">DANH SÁCH LỊCH TRÌNH</h3>
-    <div style="overflow-x: auto;">
-        <table class="table" style="width: 100%; border-collapse: collapse; margin-bottom: 1rem;">
-            <thead>
-                <tr style="background-color: #4a90e2; color: white;">
-                    <th style="padding: 12px; border: 1px solid #dee2e6; text-align: center;">Mã</th>
-                    <th style="padding: 12px; border: 1px solid #dee2e6; text-align: center;">Tàu</th>
-                    <th style="padding: 12px; border: 1px solid #dee2e6; text-align: center;">Tuyến</th>
-                    <th style="padding: 12px; border: 1px solid #dee2e6; text-align: center;">Ngày đi</th>
-                    <th style="padding: 12px; border: 1px solid #dee2e6; text-align: center;">Ngày đến</th>
-                    <th style="padding: 12px; border: 1px solid #dee2e6; text-align: center;">Trạng thái</th>
-                    <th style="padding: 12px; border: 1px solid #dee2e6; text-align: center;">Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if ($data_search): foreach ($data_search as $row): ?>
-                        <tr style="border-bottom: 1px solid #dee2e6;">
-                            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;"><?= htmlspecialchars($row['ma_lich_trinh']) ?></td>
-                            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;"><?= htmlspecialchars($row['ma_tau'] . ' - ' . $row['ten_tau']) ?></td>
-                            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;"><?= htmlspecialchars($row['ma_tuyen'] . ' - ' . $row['ten_tuyen']) ?></td>
-                            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;"><?= date('d/m/Y H:i', strtotime($row['ngay_di'])) ?></td>
-                            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;"><?= date('d/m/Y H:i', strtotime($row['ngay_den'])) ?></td>
-                            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
-                                <?php
-                                $bg_color = match ($row['trang_thai']) {
-                                    'Chưa chạy' => '#ffc107', // warning
-                                    'Đang chạy' => '#198754', // success
-                                    'Đã hoàn thành' => '#0dcaf0', // info
-                                    'Hủy' => '#dc3545', // danger
-                                    default => '#6c757d'
-                                };
-                                $text_color = ($row['trang_thai'] == 'Chưa chạy' || $row['trang_thai'] == 'Đã hoàn thành') ? '#000' : '#fff';
-                                ?>
-                                <span style="background-color: <?= $bg_color ?>; color: <?= $text_color ?>; padding: 4px 10px; border-radius: 15px; font-size: 13px;">
-                                    <?= htmlspecialchars($row['trang_thai']) ?>
-                                </span>
-                            </td>
-                            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
-                                <a href="Edit.php?id=<?= $row['id'] ?>" title="Cập nhật" style="color: #0d6efd; margin-right: 10px; font-size: 18px;">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <a href="Delete.php?id=<?= $row['id'] ?>" onclick="return confirm('Bạn có chắc chắn muốn xóa?')" title="Xóa" style="color: #dc3545; font-size: 18px;">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </td>
+        h2,
+        h3 {
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .table th {
+            background: #4a90e2;
+            color: #fff;
+            text-align: center;
+        }
+
+        .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4">QUẢN LÝ LỊCH TRÌNH</h2>
+
+        <!-- FORM TÌM KIẾM -->
+        <div class="search-form">
+            <form method="post">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Tàu</label>
+                        <select class="form-control" name="id_tau">
+                            <option value="">-- Tất cả --</option>
+                            <?php foreach ($tau_list as $tau): ?>
+                                <option value="<?= $tau['id'] ?>" <?= $id_tau == $tau['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($tau['ma_tau'] . ' - ' . $tau['ten_tau']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Tuyến đường</label>
+                        <select class="form-control" name="id_tuyen_duong">
+                            <option value="">-- Tất cả --</option>
+                            <?php foreach ($tuyen_duong_list as $tuyen): ?>
+                                <option value="<?= $tuyen['id'] ?>" <?= $id_tuyen_duong == $tuyen['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($tuyen['ma_tuyen'] . ' - ' . $tuyen['ten_tuyen']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Ngày đi</label>
+                        <input type="date" class="form-control" name="ngay_di" value="<?= htmlspecialchars($ngay_di) ?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Ngày đến</label>
+                        <input type="date" class="form-control" name="ngay_den" value="<?= htmlspecialchars($ngay_den) ?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Trạng thái</label>
+                        <select class="form-control" name="trang_thai">
+                            <option value="">Tất cả</option>
+                            <?php foreach (['Chưa chạy', 'Đang chạy', 'Đã hoàn thành', 'Hủy'] as $tt): ?>
+                                <option value="<?= $tt ?>" <?= $trang_thai == $tt ? 'selected' : '' ?>><?= $tt ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary"><i class="bi bi-search"></i> Tìm kiếm</button>
+                    <a href="Add.php" class="btn btn-success"><i class="bi bi-plus-circle"></i> Thêm mới</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- BẢNG DỮ LIỆU -->
+        <div class="table-container">
+            <h3 class="text-center mb-3">DANH SÁCH LỊCH TRÌNH</h3>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Mã</th>
+                            <th>Tàu</th>
+                            <th>Tuyến</th>
+                            <th>Ngày đi</th>
+                            <th>Ngày đến</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
                         </tr>
-                    <?php endforeach;
-                else: ?>
-                    <tr>
-                        <td colspan="8" style="padding: 20px; text-align: center; color: #6c757d;">Không tìm thấy dữ liệu</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                    </thead>
+                    <tbody>
+                        <?php if ($data_search): $i = 1;
+                            foreach ($data_search as $row): ?>
+                                <tr>
+
+                                    <td><?= $row['id'] ?></td>
+                                    <td><?= htmlspecialchars($row['ma_lich_trinh']) ?></td>
+                                    <td><?= htmlspecialchars($row['ma_tau'] . ' - ' . $row['ten_tau']) ?></td>
+                                    <td><?= htmlspecialchars($row['ma_tuyen'] . ' - ' . $row['ten_tuyen']) ?></td>
+                                    <td><?= date('d/m/Y H:i', strtotime($row['ngay_di'])) ?></td>
+                                    <td><?= date('d/m/Y H:i', strtotime($row['ngay_den'])) ?></td>
+                                    <td>
+                                        <?php
+                                        $color = match ($row['trang_thai']) {
+                                            'Chưa chạy' => 'warning',
+                                            'Đang chạy' => 'success',
+                                            'Đã hoàn thành' => 'info',
+                                            'Hủy' => 'danger',
+                                            default => 'secondary'
+                                        };
+                                        ?>
+                                        <span class="badge bg-<?= $color ?>"><?= $row['trang_thai'] ?></span>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-primary" href="Edit.php?id=<?= $row['id'] ?>"><i class="bi bi-pencil"></i></a>
+                                        <a class="btn btn-sm btn-danger"
+                                            href="Delete.php?id=<?= $row['id'] ?>"
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach;
+                        else: ?>
+                            <tr>
+                                <td colspan="9" class="text-center text-muted">Không có dữ liệu</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-</div>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+</body>
+
+</html>
 <?php
-require_once __DIR__ . '/../../includes/footer.php';
-?>
+require_once __DIR__ . '/../../includes/footer.php'; ?>

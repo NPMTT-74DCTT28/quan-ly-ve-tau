@@ -2,10 +2,7 @@
 require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__ . '/../../includes/header.php';
 
-if (!isset($_SESSION['user'])) {
-    header("Location: " . BASE_URL . "modules/auth/dang_nhap.php");
-    exit();
-}
+requireLogin();
 
 $conn = $db->getConnection();
 
@@ -111,12 +108,6 @@ $data_search = $stmt->fetchAll();
                 </button>
                 <a href="them.php" style="background: #198754; color: white; padding: 8px 20px; border: none; border-radius: 4px; text-decoration: none; margin: 0 5px; display: inline-block;">
                     <i class="bi bi-plus-circle"></i> Thêm mới
-                </a>
-                <a href="export_ve_tau.php" style="background: #0dcaf0; color: white; padding: 8px 20px; border: none; border-radius: 4px; text-decoration: none; margin: 0 5px; display: inline-block;">
-                    <i class="bi bi-file-earmark-excel"></i> Xuất Excel
-                </a>
-                <a href="import_ve_tau.php" style="background: #ffc107; color: #000; padding: 8px 20px; border: none; border-radius: 4px; text-decoration: none; margin: 0 5px; display: inline-block;">
-                    <i class="bi bi-upload"></i> Nhập Excel
                 </a>
             </div>
         </form>
