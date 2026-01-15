@@ -1,10 +1,7 @@
 <?php
 require_once __DIR__ . '/../../bootstrap.php';
 
-if (!isset($_SESSION['user'])) {
-    header("Location: " . BASE_URL . "modules/auth/dang_nhap.php");
-    exit();
-}
+requireLogin();
 
 $current_user_id = $_SESSION['user']['id'];
 $id = $_GET['id'] ?? $current_user_id;
@@ -41,33 +38,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $vai_tro = $nv['vai_tro'];
     }
+    if (!preg_match(PHONE_NUM_FORMAT, $sdt, $matches, PREG_OFFSET_CAPTURE, 0)) {
+        $error = "Số điện thoại phải bắt đầu bằng số 0 và có 10 chữ số";
+    } elseif (!empty($email) && !preg_match(EMAIL_FORMAT, $email, $matches, PREG_OFFSET_CAPTURE, 0)) {
+        $error = "Định dạng email không hợp lệ";
+    } else {
+        try {
+            $check = $conn->prepare("SELECT COUNT(*) FROM nhan_vien WHERE sdt = ? AND id != ?");
+            $check->execute([$sdt, $id]);
 
-    try {
-        $check = $conn->prepare("SELECT COUNT(*) FROM nhan_vien WHERE sdt = ? AND id != ?");
-        $check->execute([$sdt, $id]);
-
-        if ($check->fetchColumn() > 0) {
-            $error = "Số điện thoại này đã được sử dụng bởi nhân viên khác!";
-        } else {
-            if (empty($email)) $email = null;
-
-            $sql = "UPDATE nhan_vien SET ho_ten=?, ngay_sinh=?, gioi_tinh=?, sdt=?, email=?, dia_chi=?, vai_tro=? WHERE id=?";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$ho_ten, $ngay_sinh, $gioi_tinh, $sdt, $email, $dia_chi, $vai_tro, $id]);
-
-            if ($id == $current_user_id) {
-                $_SESSION['user']['ho_ten'] = $ho_ten;
-            }
-
-            if (isAdmin()) {
-                echo "<script>alert('Cập nhật thành công!'); window.location.href='index.php';</script>";
+            if ($check->fetchColumn() > 0) {
+                $error = "Số điện thoại này đã được sử dụng bởi nhân viên khác!";
             } else {
-                echo "<script>alert('Cập nhật thông tin cá nhân thành công!'); window.location.href='sua.php?id=$id';</script>";
+                if (empty($email)) $email = null;
+
+                $sql = "UPDATE nhan_vien SET ho_ten=?, ngay_sinh=?, gioi_tinh=?, sdt=?, email=?, dia_chi=?, vai_tro=? WHERE id=?";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute([$ho_ten, $ngay_sinh, $gioi_tinh, $sdt, $email, $dia_chi, $vai_tro, $id]);
+
+                if ($id == $current_user_id) {
+                    $_SESSION['user']['ho_ten'] = $ho_ten;
+                }
+
+                if (isAdmin()) {
+                    echo "<script>alert('Cập nhật thành công!'); window.location.href='index.php';</script>";
+                } else {
+                    echo "<script>alert('Cập nhật thông tin cá nhân thành công!'); window.location.href='sua.php?id=$id';</script>";
+                }
+                exit();
             }
-            exit();
+        } catch (PDOException $e) {
+            $error = "Lỗi: " . $e->getMessage();
         }
-    } catch (PDOException $e) {
-        $error = "Lỗi: " . $e->getMessage();
     }
 }
 

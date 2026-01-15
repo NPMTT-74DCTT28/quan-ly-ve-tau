@@ -1,11 +1,7 @@
 <?php
 require_once __DIR__ . '/../../bootstrap.php';
 
-if (!isset($_SESSION['user'])) {
-    header("Location: " . BASE_URL . "modules/auth/dang_nhap.php");
-    exit();
-}
-
+requireLogin();
 requireAdmin();
 
 $error = '';
@@ -22,8 +18,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dia_chi = $_POST['dia_chi'];
     $vai_tro = $_POST['vai_tro'];
 
-    if (empty($ma_nv) || empty($mat_khau) || empty($ho_ten)) {
-        $error = "Vui lòng nhập đầy đủ thông tin bắt buộc.";
+    if (!preg_match(STRONG_PASSWD, $mat_khau, $matches, PREG_OFFSET_CAPTURE, 0)) {
+        $error = "Mật khẩu phải từ 8-20 ký tự, bao gồm ít nhất 1 chữ hoa, 1 chữ thường,
+        1 chữ số, 1 ký tự đặc biệt và không chứa khoảng trắng.";
+    } elseif (!preg_match(PHONE_NUM_FORMAT, $sdt, $matches, PREG_OFFSET_CAPTURE, 0)) {
+        $error = "Số điện thoại phải bắt đầu bằng số 0 và có 10 chữ số";
+    } elseif (!empty($email) && !preg_match(EMAIL_FORMAT, $email, $matches, PREG_OFFSET_CAPTURE, 0)) {
+        $error = "Định dạng email không hợp lệ";
     } else {
         if (empty($email)) {
             $email = null;
@@ -71,28 +72,28 @@ require_once __DIR__ . '/../../includes/header.php';
 
     <form method="POST" action="" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
         <div class="form-group" style="margin-bottom: 15px;">
-            <label>Mã nhân viên (*)</label>
+            <label>Mã nhân viên*</label>
             <input type="text" name="ma_nhan_vien" class="form-control" required placeholder="VD: NV001" style="width: 100%; padding: 8px; margin-top: 5px;">
         </div>
 
         <div class="form-group" style="margin-bottom: 15px;">
-            <label>Họ và tên (*)</label>
+            <label>Họ và tên*</label>
             <input type="text" name="ho_ten" class="form-control" required placeholder="Nhập họ tên" style="width: 100%; padding: 8px; margin-top: 5px;">
         </div>
 
         <div class="form-group" style="margin-bottom: 15px;">
-            <label>Mật khẩu (*)</label>
+            <label>Mật khẩu*</label>
             <input type="password" name="mat_khau" class="form-control" required placeholder="Nhập mật khẩu" style="width: 100%; padding: 8px; margin-top: 5px;">
         </div>
 
         <div style="display: flex; gap: 20px;">
             <div class="form-group" style="flex: 1; margin-bottom: 15px;">
-                <label>Ngày sinh</label>
-                <input type="date" name="ngay_sinh" class="form-control" value="<?php echo date('Y-m-d'); ?>" style="width: 100%; padding: 8px; margin-top: 5px;">
+                <label>Ngày sinh*</label>
+                <input type="date" name="ngay_sinh" class="form-control" max="<?php echo date('Y-m-d') ?>" required value="<?php echo date('Y-m-d'); ?>" style="width: 100%; padding: 8px; margin-top: 5px;">
             </div>
             <div class="form-group" style="flex: 1; margin-bottom: 15px;">
-                <label>Giới tính</label>
-                <select name="gioi_tinh" class="form-control" style="width: 100%; padding: 8px; margin-top: 5px;">
+                <label>Giới tính*</label>
+                <select name="gioi_tinh" class="form-control" required style="width: 100%; padding: 8px; margin-top: 5px;">
                     <option value="Nam">Nam</option>
                     <option value="Nữ">Nữ</option>
                     <option value="Khác">Khác</option>
@@ -102,8 +103,8 @@ require_once __DIR__ . '/../../includes/header.php';
 
         <div style="display: flex; gap: 20px;">
             <div class="form-group" style="flex: 1; margin-bottom: 15px;">
-                <label>Số điện thoại (*)</label>
-                <input type="text" name="sdt" class="form-control" required style="width: 100%; padding: 8px; margin-top: 5px;">
+                <label>Số điện thoại*</label>
+                <input type="number" name="sdt" class="form-control" required style="width: 100%; padding: 8px; margin-top: 5px;">
             </div>
             <div class="form-group" style="flex: 1; margin-bottom: 15px;">
                 <label>Email</label>
@@ -112,12 +113,12 @@ require_once __DIR__ . '/../../includes/header.php';
         </div>
 
         <div class="form-group" style="margin-bottom: 15px;">
-            <label>Địa chỉ</label>
-            <input type="text" name="dia_chi" class="form-control" style="width: 100%; padding: 8px; margin-top: 5px;">
+            <label>Địa chỉ*</label>
+            <input type="text" name="dia_chi" class="form-control" required style="width: 100%; padding: 8px; margin-top: 5px;">
         </div>
 
         <div class="form-group" style="margin-bottom: 20px;">
-            <label>Vai trò</label>
+            <label>Vai trò*</label>
             <select name="vai_tro" class="form-control" style="width: 100%; padding: 8px; margin-top: 5px;" required>
                 <option value="<?php echo ROLE_NHAN_VIEN; ?>"><?php echo ROLE_NHAN_VIEN; ?></option>
                 <option value="<?php echo ROLE_ADMIN; ?>"><?php echo ROLE_ADMIN; ?></option>
