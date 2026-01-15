@@ -16,14 +16,18 @@ if (isset($_POST['btnAdd'])) {
 }
 
 try {
-    $sql = "SELECT ghe.*, toa_tau.ma_toa 
+    // Thêm INNER JOIN với bảng tau để lấy ten_tau
+    $sql = "SELECT ghe.*, toa_tau.ma_toa, tau.ten_tau 
             FROM ghe 
             INNER JOIN toa_tau ON ghe.id_toa_tau = toa_tau.id 
+            INNER JOIN tau ON toa_tau.id_tau = tau.id
             WHERE 1=1";
     $params = [];
 
     if (!empty($so_ghe)) {
-        $sql .= " AND (ghe.so_ghe LIKE ? OR toa_tau.ma_toa LIKE ?)";
+        // Cập nhật để có thể tìm kiếm theo cả tên tàu
+        $sql .= " AND (ghe.so_ghe LIKE ? OR toa_tau.ma_toa LIKE ? OR tau.ten_tau LIKE ?)";
+        $params[] = "%$so_ghe%";
         $params[] = "%$so_ghe%";
         $params[] = "%$so_ghe%";
     }
@@ -81,7 +85,9 @@ try {
                         <tr style="border-bottom: 1px solid #dee2e6;">
                             <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;"><?php echo $i++; ?></td>
                             <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;"><?php echo htmlspecialchars($row['so_ghe']); ?></td>
-                            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;"><?php echo htmlspecialchars($row['ma_toa']); ?></td>
+                            <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
+    <?php echo htmlspecialchars($row['ma_toa'] . " (" . $row['ten_tau'] . ")"); ?>
+</td>
                             <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
                                 <a href="Edit.php?id=<?php echo $row['id']; ?>" title="Cập nhật" style="color: #0d6efd; margin-right: 10px; font-size: 18px;">
                                     <i class="bi bi-pencil-square"></i>

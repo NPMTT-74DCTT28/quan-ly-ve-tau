@@ -5,7 +5,9 @@ requireLogin();
 requireAdmin();
 
 $conn = $db->getConnection();
-$toa_list = $conn->query("SELECT id, ma_toa FROM toa_tau")->fetchAll();
+$toa_list = $conn->query("SELECT toa_tau.id, toa_tau.ma_toa, tau.ten_tau 
+                          FROM toa_tau 
+                          INNER JOIN tau ON toa_tau.id_tau = tau.id")->fetchAll();
 
 $error_message = '';
 $success_message = '';
@@ -66,8 +68,8 @@ require_once __DIR__ . '/../../includes/header.php';
                 <option value="">-- Chọn Toa --</option>
                 <?php foreach ($toa_list as $toa): ?>
                     <option value="<?= $toa['id'] ?>" <?= ($id_toa_tau == $toa['id']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($toa['ma_toa']) ?>
-                    </option>
+    <?= htmlspecialchars($toa['ma_toa'] . " (" . $toa['ten_tau'] . ")") ?>
+</option>
                 <?php endforeach; ?>
             </select>
         </div>
