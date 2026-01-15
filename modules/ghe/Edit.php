@@ -23,7 +23,9 @@ if (!$ghe) {
 }
 
 // 2. Lấy danh sách toa
-$toa_list = $conn->query("SELECT id, ma_toa FROM toa_tau")->fetchAll();
+$toa_list = $conn->query("SELECT toa_tau.id, toa_tau.ma_toa, tau.ten_tau 
+                          FROM toa_tau 
+                          INNER JOIN tau ON toa_tau.id_tau = tau.id")->fetchAll();
 
 $error_message = '';
 
@@ -76,7 +78,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <select name="id_toa_tau" class="form-control" required style="width: 100%; padding: 8px; margin-top: 5px;">
                 <?php foreach ($toa_list as $toa): ?>
                     <option value="<?= $toa['id'] ?>" <?= $toa['id'] == $ghe['id_toa_tau'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($toa['ma_toa']) ?>
+                        <?= htmlspecialchars($toa['ma_toa'] . " (" . $toa['ten_tau'] . ")") ?>
                     </option>
                 <?php endforeach; ?>
             </select>

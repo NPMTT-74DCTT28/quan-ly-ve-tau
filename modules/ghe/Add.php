@@ -68,8 +68,8 @@ require_once __DIR__ . '/../../includes/header.php';
                 <option value="">-- Chọn Toa --</option>
                 <?php foreach ($toa_list as $toa): ?>
                     <option value="<?= $toa['id'] ?>" <?= ($id_toa_tau == $toa['id']) ? 'selected' : '' ?>>
-    <?= htmlspecialchars($toa['ma_toa'] . " (" . $toa['ten_tau'] . ")") ?>
-</option>
+                        <?= htmlspecialchars($toa['ma_toa'] . " (" . $toa['ten_tau'] . ")") ?>
+                    </option>
                 <?php endforeach; ?>
             </select>
         </div>

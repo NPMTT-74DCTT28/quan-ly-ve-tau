@@ -16,7 +16,7 @@ if (isset($_POST['btnAdd'])) {
 }
 
 try {
-    // Thêm INNER JOIN với bảng tau để lấy ten_tau
+    // 1. Thêm INNER JOIN với bảng tau để lấy ten_tau
     $sql = "SELECT ghe.*, toa_tau.ma_toa, tau.ten_tau 
             FROM ghe 
             INNER JOIN toa_tau ON ghe.id_toa_tau = toa_tau.id 
@@ -25,11 +25,11 @@ try {
     $params = [];
 
     if (!empty($so_ghe)) {
-        // Cập nhật để có thể tìm kiếm theo cả tên tàu
+        // 2. Thêm điều kiện tìm kiếm theo tau.ten_tau
         $sql .= " AND (ghe.so_ghe LIKE ? OR toa_tau.ma_toa LIKE ? OR tau.ten_tau LIKE ?)";
         $params[] = "%$so_ghe%";
         $params[] = "%$so_ghe%";
-        $params[] = "%$so_ghe%";
+        $params[] = "%$so_ghe%"; // Tham số thứ 3 cho tên tàu
     }
 
     $sql .= " ORDER BY ghe.id DESC";
@@ -49,7 +49,7 @@ try {
             <div class="row" style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
                 <div style="flex: 1; min-width: 200px; max-width: 400px;">
                     <label style="font-weight: 600; font-size: 14px; margin-bottom: 5px; display: block;">Tìm kiếm ghế/toa:</label>
-                    <input type="text" class="form-control" name="so_ghe" value="<?php echo htmlspecialchars($so_ghe); ?>" placeholder="Nhập số ghế hoặc mã toa"
+                    <input type="text" class="form-control" name="so_ghe" value="<?php echo htmlspecialchars($so_ghe); ?>" placeholder="Nhập số ghế, mã toa hoặc tên tàu..."
                         style="width: 100%; padding: 6px 10px; border: 1px solid #ced4da; border-radius: 4px;">
                 </div>
             </div>
@@ -86,8 +86,8 @@ try {
                             <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;"><?php echo $i++; ?></td>
                             <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;"><?php echo htmlspecialchars($row['so_ghe']); ?></td>
                             <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
-    <?php echo htmlspecialchars($row['ma_toa'] . " (" . $row['ten_tau'] . ")"); ?>
-</td>
+                                <?php echo htmlspecialchars($row['ma_toa'] . " (" . $row['ten_tau'] . ")"); ?>
+                            </td>
                             <td style="padding: 10px; border: 1px solid #dee2e6; text-align: center;">
                                 <a href="Edit.php?id=<?php echo $row['id']; ?>" title="Cập nhật" style="color: #0d6efd; margin-right: 10px; font-size: 18px;">
                                     <i class="bi bi-pencil-square"></i>
