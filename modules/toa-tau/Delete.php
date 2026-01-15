@@ -10,13 +10,9 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header('Location: index.php');
     exit;
 }
-
+try {
+   
 $id = (int) $_GET['id'];
-
-// Thực hiện xóa
-// Lưu ý: Do có ON DELETE CASCADE trong SQL cho bảng toa_tau (liên quan đến ghế), 
-// nên nếu xóa toa, các ghế trong toa đó cũng có thể bị xóa theo (tùy config foreign key của bảng ghế).
-// Ở đây ta chỉ xóa toa.
 
 $stmt = $conn->prepare("DELETE FROM toa_tau WHERE id = ?");
 $stmt->execute([$id]);
@@ -31,5 +27,15 @@ if ($stmt->rowCount() > 0) {
         alert('Toa tàu không tồn tại hoặc lỗi!');
         window.location.href = 'index.php';
     </script>";
+}
+} catch (PDOException $e) {
+    if ($e->getCode() == '23000') {
+        echo "<script>
+            alert('Không thể xóa toa tàu này vì đã có dữ liệu liên quan trong hệ thống .');
+            window.location.href = 'index.php';
+        </script>";
+    } else {
+        echo "Lỗi hệ thống: " . $e->getMessage();
+    }
 }
 ?>
