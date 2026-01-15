@@ -183,8 +183,6 @@ $data_search = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="action-buttons">
                     <button class="btn btn-primary"><i class="bi bi-search"></i> Tìm kiếm</button>
                     <a href="Add.php" class="btn btn-success"><i class="bi bi-plus-circle"></i> Thêm mới</a>
-                    <a href="Export.php" class="btn btn-info text-white"><i class="bi bi-file-earmark-excel"></i> Xuất Excel</a>
-                    <a href="Import.php" class="btn btn-warning"><i class="bi bi-upload"></i> Nhập Excel</a>
                 </div>
             </form>
         </div>

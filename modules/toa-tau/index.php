@@ -96,12 +96,6 @@ $data_search = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <a href="Add.php" style="background: #198754; color: white; padding: 8px 20px; border: none; border-radius: 4px; text-decoration: none; margin: 0 5px; display: inline-block;">
                     <i class="bi bi-plus-circle"></i> Thêm mới
                 </a>
-                <a href="Export.php" style="background: #0dcaf0; color: white; padding: 8px 20px; border: none; border-radius: 4px; text-decoration: none; margin: 0 5px; display: inline-block;">
-                    <i class="bi bi-file-earmark-excel"></i> Xuất Excel
-                </a>
-                <a href="Import.php" style="background: #ffc107; color: #000; padding: 8px 20px; border: none; border-radius: 4px; text-decoration: none; margin: 0 5px; display: inline-block;">
-                    <i class="bi bi-upload"></i> Nhập Excel
-                </a>
             </div>
         </form>
     </div>
