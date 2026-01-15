@@ -2,13 +2,10 @@
 require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__ . '/../../includes/header.php';
 
-requireLogin();
-requireAdmin();
+$conn = $db -> getConnection();
 
-$conn = $db->getConnection();
-
-$ma_tuyen = isset($_POST['txtmatuyen']) ? trim($_POST['txtmatuyen']) : '';
-$ten_tuyen = isset($_POST['txttentuyen']) ? trim($_POST['txttentuyen']) : '';
+$ma_tuyen = isset($_POST['txtmatuyen']) ? $_POST['txtmatuyen'] : '';
+$ten_tuyen = isset($_POST['txttentuyen']) ? $_POST['txttentuyen'] : '';
 
 $sql = "SELECT 
     td.ma_tuyen,
@@ -38,83 +35,94 @@ $sql .= " ORDER BY td.ma_tuyen ASC";
 $stmt = $conn->prepare($sql);
 $stmt->execute($params);
 $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<div class="container" style="padding: 20px;">
-    <h2>Quản Lý Tuyến Đường</h2>
-
-    <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px;">
-        <form method="POST" action="" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
-            <div style="flex: 1; min-width: 200px;">
-                <label style="font-weight: bold;">Mã Tuyến</label>
-                <input type="text" name="txtmatuyen" value="<?= htmlspecialchars($ma_tuyen) ?>" placeholder="Nhập mã tuyến..." style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ced4da; border-radius: 4px;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QL TUYEN DUONG</title>
+    <link rel="stylesheet" href="../../modules/tuyen-duong/tuyenduongstyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="page-wrapper">
+    <form method="POST" class="search-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Mã Tuyến</label>
+                <input type="text" name="txtmatuyen" placeholder="Nhập mã tuyến...">
             </div>
 
-            <div style="flex: 1; min-width: 200px;">
-                <label style="font-weight: bold;">Tên Tuyến</label>
-                <input type="text" name="txttentuyen" value="<?= htmlspecialchars($ten_tuyen) ?>" placeholder="Nhập tên tuyến..." style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ced4da; border-radius: 4px;">
+            <div class="form-group">
+                <label>Tên Tuyến</label>
+                <input type="text" name="txttentuyen" placeholder="Nhập tên tuyến...">
             </div>
+        </div>
 
-            <div style="display: flex; gap: 10px;">
-                <button type="submit" name="btnTimkiem" style="background: #17a2b8; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;">
-                    <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
-                </button>
-                <a href="themtuyen.php" style="background: #28a745; color: white; padding: 8px 15px; border: none; border-radius: 4px; text-decoration: none; display: inline-block;">
-                    <i class="fa-solid fa-plus"></i> Thêm mới
-                </a>
-            </div>
-        </form>
-    </div>
-
-    <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; min-width: 800px;">
+        <div class="form-actions">
+            <button type="submit" name="btnTimkiem" class="btn_timkiem">
+                <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+            </button>
+            <a href="themtuyen.php" class="btn_them">
+                <i class="fa-solid fa-plus"></i> Thêm tuyến đường
+            </a>
+        </div>
+        
+    </form>
+    <div class="table-wrapper">
+        <table class="data_bang">
             <thead>
-                <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">STT</th>
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Mã Tuyến</th>
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Tên Tuyến</th>
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Ga đi</th>
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Ga đến</th>
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Khoảng cách</th>
-                    <th style="padding: 12px; text-align: left; border-bottom: 1px solid #dee2e6;">Giá cơ bản</th>
-                    <th style="padding: 12px; text-align: center; border-bottom: 1px solid #dee2e6; width: 150px;">Thao tác</th>
+                <tr>
+                    <th>STT</th>
+                    <th>Mã Tuyến</th>
+                    <th>Tên Tuyến</th>
+                    <th>Ga đi</th>
+                    <th>Ga đến</th>
+                    <th>Khoảng cách (km)</th>
+                    <th>Giá cơ bản</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
 
             <tbody>
-                <?php if (!empty($data)): ?>
-                    <?php $i = 0;
-                    foreach ($data as $row): ?>
-                        <tr style="border-bottom: 1px solid #dee2e6;">
-                            <td style="padding: 12px;"><?= ++$i; ?></td>
-                            <td style="padding: 12px; font-weight: bold;"><?= htmlspecialchars($row['ma_tuyen']); ?></td>
-                            <td style="padding: 12px;"><?= htmlspecialchars($row['ten_tuyen']); ?></td>
-                            <td style="padding: 12px;"><?= htmlspecialchars($row['ten_ga_di']); ?></td>
-                            <td style="padding: 12px;"><?= htmlspecialchars($row['ten_ga_den']); ?></td>
-                            <td style="padding: 12px;"><?= htmlspecialchars($row['khoang_cach_km']); ?> km</td>
-                            <td style="padding: 12px;"><?= number_format($row['gia_co_ban'], 0, ',', '.'); ?> đ</td>
-                            <td style="padding: 12px; text-align: center;">
-                                <a href="suatuyen.php?ma_tuyen=<?= $row['ma_tuyen']; ?>" style="color: #ffc107; margin-right: 10px;" title="Sửa">
-                                    <i class="fa-solid fa-pen"></i>
-                                </a>
-                                <a href="xoa.php?ma_tuyen=<?= $row['ma_tuyen']; ?>"
-                                    onclick="return confirm('Bạn có muốn xóa tuyến <?= htmlspecialchars($row['ten_tuyen']); ?> không?');"
-                                    style="color: #dc3545;" title="Xóa">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="8" style="padding: 20px; text-align: center; color: #666;">Không có tuyến đường nào...</td>
-                    </tr>
-                <?php endif; ?>
+                <?php
+                    if (!empty($data)) {
+                    $i = 0;
+                    foreach ($data as $row) {
+                ?>
+                <tr>
+                    <td><?php echo ++$i; ?></td>
+                    <td><?php echo htmlspecialchars($row['ma_tuyen']); ?></td>
+                    <td><?php echo htmlspecialchars($row['ten_tuyen']); ?></td>
+                    <td><?php echo htmlspecialchars($row['ten_ga_di']); ?></td>
+                    <td><?php echo htmlspecialchars($row['ten_ga_den']); ?></td>
+                    <td><?php echo htmlspecialchars($row['khoang_cach_km']); ?></td>
+                    <td><?php echo htmlspecialchars($row['gia_co_ban']); ?></td>
+                    <td class="action-col">
+                    <a href="suatuyen.php?ma_tuyen=<?php echo $row['ma_tuyen']; ?>" class="btn_sua">
+                        <i class="fa-solid fa-pen"></i> Sửa
+                    </a>
+
+                    <a href="xoa.php?ma_tuyen=<?php echo $row['ma_tuyen']; ?>"
+                    class="btn_xoa"
+                        onclick="return confirm('Bạn có muốn xóa <?php echo htmlspecialchars($row['ten_tuyen']); ?> không ?');">
+                    <i class="fa-solid fa-trash-can"></i> Xóa
+                    </a>
+                    </td>
+                </tr>
+            <?php
+                }
+                } else {
+                    echo "<tr><td colspan='8'>Không có tuyến đường nào...</td></tr>";
+                }
+            ?>
             </tbody>
         </table>
     </div>
-</div>
 
+</div>
+</body>
+</html>
 <?php require_once __DIR__ . '/../../includes/footer.php'; ?>
