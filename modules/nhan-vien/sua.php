@@ -2,7 +2,6 @@
 require_once __DIR__ . '/../../bootstrap.php';
 
 requireLogin();
-requireAdmin();
 
 $current_user_id = $_SESSION['user']['id'];
 $id = $_GET['id'] ?? $current_user_id;

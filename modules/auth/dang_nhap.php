@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($user && password_verify($mat_khau, $user['mat_khau'])) {
         session_start();
         $_SESSION['user'] = $user;
-        echo "<script> alert('Đăng nhập thành công!'); window.location.href = '" . BASE_URL . "';</script>";
+        header("Location: " . BASE_URL);
         exit();
     } else {
         $error_message = "Sai tên đăng nhập hoặc mật khẩu!";
