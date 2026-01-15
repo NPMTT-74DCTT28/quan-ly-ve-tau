@@ -10,7 +10,8 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     exit;
 }
 
-$id = (int) $_GET['id'];
+try {
+    $id = (int) $_GET['id'];
 
 $stmt = $conn->prepare("DELETE FROM lich_trinh WHERE id = ?");
 $stmt->execute([$id]);
@@ -25,4 +26,14 @@ if ($stmt->rowCount() > 0) {
         alert('Lịch trình không tồn tại hoặc đã bị xóa!');
         window.location.href = 'index.php';
     </script>";
+}
+} catch (PDOException $e) {
+    if ($e->getCode() == '23000') {
+        echo "<script>
+            alert('Không thể xóa lich trinh này vì đã có dữ liệu liên quan trong hệ thống .');
+            window.location.href = 'index.php';
+        </script>";
+    } else {
+        echo "Lỗi hệ thống: " . $e->getMessage();
+    }
 }
