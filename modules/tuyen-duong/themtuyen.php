@@ -9,13 +9,9 @@ require_once __DIR__ . '/../../includes/header.php';
 $conn = $db->getConnection();
 $error_message = '';
 $success_message = '';
-
-// Lấy danh sách ga để đổ vào select box
 $sqlGa = "SELECT id, ten_ga FROM ga_tau";
 $stmtGa = $conn->query($sqlGa);
 $dsGa = $stmtGa->fetchAll(PDO::FETCH_ASSOC);
-
-// Biến giữ giá trị cũ
 $ma = '';
 $ten = '';
 $gadi = '';
@@ -36,7 +32,6 @@ if (isset($_POST['btnthem'])) {
     } elseif ($gadi === $gaden) {
         $error_message = "Ga đi và ga đến không được trùng nhau!";
     } else {
-        // Kiểm tra mã tuyến trùng
         $stmtCheck = $conn->prepare("SELECT COUNT(*) FROM tuyen_duong WHERE ma_tuyen = ?");
         $stmtCheck->execute([$ma]);
         if ($stmtCheck->fetchColumn() > 0) {
@@ -50,7 +45,6 @@ if (isset($_POST['btnthem'])) {
             try {
                 if ($stmt->execute([$ma, $ten, $gadi, $gaden, $kc, $gia])) {
                     $success_message = "Thêm tuyến đường thành công!";
-                    // Reset form
                     $ma = $ten = $gadi = $gaden = $kc = $gia = '';
                 } else {
                     $error_message = "Thêm thất bại, vui lòng thử lại.";
