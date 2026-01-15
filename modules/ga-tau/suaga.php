@@ -13,8 +13,6 @@ require_once __DIR__ . '/../../includes/header.php';
 $conn = $db->getConnection();
 $error_message = '';
 $success_message = '';
-
-// 1. Lấy dữ liệu cũ
 $current_ga = null;
 if (isset($_GET['ma_ga'])) {
     $ma_edit = $_GET['ma_ga'];
@@ -27,8 +25,6 @@ if (isset($_GET['ma_ga'])) {
         exit();
     }
 }
-
-// 2. Xử lý Sửa
 if (isset($_POST['btnsua'])) {
     $ma  = $_POST['txtmaga'];
     $ten = trim($_POST['txttenga']);
@@ -44,7 +40,6 @@ if (isset($_POST['btnsua'])) {
             $stmt->execute([$ten, $dc, $tp, $ma]);
 
             $success_message = "Cập nhật thành công!";
-            // Cập nhật lại dữ liệu hiển thị
             $current_ga['ten_ga'] = $ten;
             $current_ga['dia_chi'] = $dc;
             $current_ga['thanh_pho'] = $tp;

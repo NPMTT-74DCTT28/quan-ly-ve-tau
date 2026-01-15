@@ -13,8 +13,6 @@ require_once __DIR__ . '/../../includes/header.php';
 $conn = $db->getConnection();
 $error_message = '';
 $success_message = '';
-
-// Khởi tạo biến để giữ lại giá trị cũ nếu nhập lỗi
 $ma = '';
 $ten = '';
 $dc = '';
@@ -29,7 +27,6 @@ if (isset($_POST['btnthem'])) {
     if (empty($ma) || empty($ten) || empty($dc) || empty($tp)) {
         $error_message = "Vui lòng điền đầy đủ thông tin!";
     } else {
-        // Kiểm tra mã ga đã tồn tại chưa
         $sql_check = "SELECT ma_ga FROM ga_tau WHERE ma_ga = ?";
         $stmt_check = $conn->prepare($sql_check);
         $stmt_check->execute([$ma]);
@@ -42,10 +39,7 @@ if (isset($_POST['btnthem'])) {
 
             if ($stmt->execute([$ma, $ten, $dc, $tp])) {
                 $success_message = "Thêm ga tàu thành công!";
-                // Reset form
                 $ma = $ten = $dc = $tp = '';
-                // Có thể redirect nếu muốn:
-                // echo "<script>window.location.href = 'index.php';</script>";
             } else {
                 $error_message = "Lỗi hệ thống, vui lòng thử lại sau.";
             }

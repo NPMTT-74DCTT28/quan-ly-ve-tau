@@ -13,8 +13,6 @@ require_once __DIR__ . '/../../includes/header.php';
 $conn = $db->getConnection();
 $error_message = '';
 $success_message = '';
-
-// 1. Lấy dữ liệu cũ
 $current_tuyen = null;
 if (isset($_GET['ma_tuyen'])) {
     $ma_edit = $_GET['ma_tuyen'];
@@ -27,15 +25,11 @@ if (isset($_GET['ma_tuyen'])) {
         exit();
     }
 }
-
-// Lấy danh sách ga
 $sqlGa = "SELECT id, ten_ga FROM ga_tau";
 $stmtGa = $conn->query($sqlGa);
 $dsGa = $stmtGa->fetchAll(PDO::FETCH_ASSOC);
-
-// 2. Xử lý sửa
 if (isset($_POST['btnsua'])) {
-    $ma    = $_POST['txtmatuyen']; // Readonly
+    $ma    = $_POST['txtmatuyen'];
     $ten   = trim($_POST['txttentuyen']);
     $gadi  = (int)$_POST['txtgadi'];
     $gaden = (int)$_POST['txtgaden'];
@@ -47,13 +41,11 @@ if (isset($_POST['btnsua'])) {
     } elseif ($gadi === $gaden) {
         $error_message = "Ga đi và ga đến không được trùng nhau!";
     } else {
-        // Kiểm tra trùng tuyến đường (trừ chính nó)
         $checkSql = "SELECT COUNT(*) FROM tuyen_duong
                      WHERE id_ga_di = ? AND id_ga_den = ?
                      AND ma_tuyen <> ?";
         $checkStmt = $conn->prepare($checkSql);
         $checkStmt->execute([$gadi, $gaden, $ma]);
-
         if ($checkStmt->fetchColumn() > 0) {
             $error_message = "Tuyến đường với cặp Ga đi - Ga đến này đã tồn tại!";
         } else {
@@ -67,9 +59,7 @@ if (isset($_POST['btnsua'])) {
                         WHERE ma_tuyen = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([$ten, $gadi, $gaden, $kc, $gia, $ma]);
-
                 $success_message = "Cập nhật thành công!";
-                // Cập nhật lại biến hiển thị
                 $current_tuyen['ten_tuyen'] = $ten;
                 $current_tuyen['id_ga_di'] = $gadi;
                 $current_tuyen['id_ga_den'] = $gaden;
