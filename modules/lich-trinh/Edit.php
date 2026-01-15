@@ -7,27 +7,15 @@ requireAdmin();
 
 $conn = $db->getConnection();
 
-/* =========================
-   LẤY DANH SÁCH TÀU
-========================= */
 $sql_tau = "SELECT id, ma_tau, ten_tau FROM tau ORDER BY ma_tau";
 $tau_list = $conn->query($sql_tau)->fetchAll(PDO::FETCH_ASSOC);
 
-/* =========================
-   LẤY DANH SÁCH TUYẾN ĐƯỜNG
-========================= */
 $sql_tuyen = "SELECT id, ma_tuyen, ten_tuyen FROM tuyen_duong ORDER BY ma_tuyen";
 $tuyen_list = $conn->query($sql_tuyen)->fetchAll(PDO::FETCH_ASSOC);
 
-/* =========================
-   KHAI BÁO BIẾN
-========================= */
 $id = $ma_lich_trinh = $id_tau = $id_tuyen_duong = $ngay_di = $ngay_den = $trang_thai = '';
 $error_message = '';
 
-/* =========================
-   LẤY DỮ LIỆU THEO ID
-========================= */
 if (!isset($_GET['id'])) {
     echo "<script>alert('Không có ID lịch trình!'); window.location='index.php';</script>";
     exit;
@@ -52,9 +40,6 @@ $ngay_di = date('Y-m-d\TH:i', strtotime($row['ngay_di']));
 $ngay_den = date('Y-m-d\TH:i', strtotime($row['ngay_den']));
 $trang_thai = $row['trang_thai'];
 
-/* =========================
-   XỬ LÝ CẬP NHẬT
-========================= */
 if (isset($_POST['btnEdit'])) {
     $id = $_POST['id'];
     $ma_lich_trinh = trim($_POST['ma_lich_trinh']);
@@ -64,12 +49,9 @@ if (isset($_POST['btnEdit'])) {
     $ngay_den = $_POST['ngay_den'];
     $trang_thai = $_POST['trang_thai'];
 
-    // 1️⃣ Kiểm tra ngày
     if (strtotime($ngay_den) < strtotime($ngay_di)) {
         $error_message = "Ngày đến không được trước ngày đi!";
     } else {
-
-        // 2️⃣ Kiểm tra trùng mã lịch trình
         $sql_check = "SELECT COUNT(*) FROM lich_trinh 
                       WHERE ma_lich_trinh = ? AND id <> ?";
         $stmt_check = $conn->prepare($sql_check);
@@ -78,8 +60,6 @@ if (isset($_POST['btnEdit'])) {
         if ($stmt_check->fetchColumn() > 0) {
             $error_message = "Mã lịch trình đã tồn tại, vui lòng nhập mã khác!";
         } else {
-
-            // 3️⃣ Update
             $sql_update = "UPDATE lich_trinh SET 
                            ma_lich_trinh = ?, 
                            id_tau = ?, 
@@ -119,7 +99,6 @@ if (isset($_POST['btnEdit'])) {
     <style>
         .custom-card {
             background-color: #81aad3ff;
-            /* màu bạn yêu cầu */
             border-radius: 15px;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
         }

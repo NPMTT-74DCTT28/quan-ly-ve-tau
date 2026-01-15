@@ -4,7 +4,6 @@ require_once __DIR__ . '/../../includes/header.php';
 
 $conn = $db->getConnection();
 
-// 1. Lấy dữ liệu cũ để hiển thị lên Form
 $current_ga = null;
 if (isset($_GET['ma_ga'])) {
     $ma_edit = $_GET['ma_ga'];
@@ -18,20 +17,15 @@ if (isset($_GET['ma_ga'])) {
     }
 }
 
-// 2. Xử lý khi nhấn nút "Sửa Ga"
 if (isset($_POST['btnsua'])) {
-    // PHẢI LẤY ĐÚNG TÊN Ở THẺ 'name' PHÍA DƯỚI HTML
     $ma  = $_POST['txtmaga']; 
     $ten = $_POST['txttenga'];
     $dc  = $_POST['txtdiachi'];
-    $tp  = $_POST['txtthanhpho']; // Đã thêm lại cột Thành phố đây rồi nhé!
+    $tp  = $_POST['txtthanhpho'];
 
     try {
-        // Thêm cột thanh_pho vào câu lệnh UPDATE
         $sql = "UPDATE ga_tau SET ten_ga = ?, dia_chi = ?, thanh_pho = ? WHERE ma_ga = ?";
         $stmt = $conn->prepare($sql);
-        
-        // Truyền đủ 4 tham số theo thứ tự dấu ?
         $stmt->execute([$ten, $dc, $tp, $ma]);
         
         echo "<script>alert('Cập nhật thành công!'); window.location.href='index.php';</script>";

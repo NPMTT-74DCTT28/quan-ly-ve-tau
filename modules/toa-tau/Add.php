@@ -7,7 +7,6 @@ requireAdmin();
 
 $conn = $db->getConnection();
 
-// Lấy dữ liệu dropdown
 $tau_list = $conn->query("SELECT id, ma_tau, ten_tau FROM tau ORDER BY ma_tau")->fetchAll(PDO::FETCH_ASSOC);
 $loai_toa_list = $conn->query("SELECT id, ten_loai FROM loai_toa ORDER BY ten_loai")->fetchAll(PDO::FETCH_ASSOC);
 
@@ -22,7 +21,6 @@ if (isset($_POST['btnAdd'])) {
     if (empty($ma_toa) || empty($id_tau) || empty($id_loai_toa)) {
         $error_message = "Vui lòng nhập đầy đủ thông tin!";
     } else {
-        // KIỂM TRA TRÙNG: (Mã toa + ID Tàu) phải là duy nhất
         $stmt_check = $conn->prepare("SELECT COUNT(*) FROM toa_tau WHERE ma_toa = ? AND id_tau = ?");
         $stmt_check->execute([$ma_toa, $id_tau]);
 
@@ -32,7 +30,7 @@ if (isset($_POST['btnAdd'])) {
             $stmt = $conn->prepare("INSERT INTO toa_tau (ma_toa, id_tau, id_loai_toa) VALUES (?, ?, ?)");
             if ($stmt->execute([$ma_toa, $id_tau, $id_loai_toa])) {
                 $success_message = "Thêm toa tàu thành công!";
-                $ma_toa = $id_tau = $id_loai_toa = ''; // Reset form
+                $ma_toa = $id_tau = $id_loai_toa = '';
             } else {
                 $error_message = "Lỗi hệ thống, vui lòng thử lại!";
             }

@@ -7,9 +7,6 @@ requireAdmin();
 
 $conn = $db->getConnection();
 
-/* =======================
-   LẤY DỮ LIỆU SELECT
-======================= */
 $tau_list = $conn->query(
     "SELECT id, ma_tau, ten_tau FROM tau ORDER BY ma_tau"
 )->fetchAll(PDO::FETCH_ASSOC);
@@ -18,16 +15,10 @@ $tuyen_duong_list = $conn->query(
     "SELECT id, ma_tuyen, ten_tuyen FROM tuyen_duong ORDER BY ma_tuyen"
 )->fetchAll(PDO::FETCH_ASSOC);
 
-/* =======================
-   KHỞI TẠO BIẾN
-======================= */
 $ma_lich_trinh = $id_tau = $id_tuyen_duong = '';
 $ngay_di = $ngay_den = $trang_thai = '';
 $error_message = $success_message = '';
 
-/* =======================
-   XỬ LÝ FORM
-======================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['btnAdd'])) {
@@ -39,20 +30,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ngay_den        = $_POST['ngay_den'];
         $trang_thai      = $_POST['trang_thai'];
 
-        /* 1. Kiểm tra rỗng */
         if (
             empty($ma_lich_trinh) || empty($id_tau) ||
             empty($id_tuyen_duong) || empty($ngay_di) ||
             empty($ngay_den) || empty($trang_thai)
         ) {
             $error_message = "Vui lòng nhập đầy đủ thông tin!";
-        }
-
-        /* 2. Kiểm tra ngày */ elseif (strtotime($ngay_den) < strtotime($ngay_di)) {
+        } elseif (strtotime($ngay_den) < strtotime($ngay_di)) {
             $error_message = "Ngày đến không được trước ngày đi!";
-        }
-
-        /* 3. Kiểm tra trùng mã */ else {
+        } else {
             $stmt = $conn->prepare(
                 "SELECT 1 FROM lich_trinh WHERE ma_lich_trinh = ?"
             );
@@ -61,8 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->fetch()) {
                 $error_message = "Mã lịch trình đã tồn tại! Vui lòng nhập mã khác.";
             } else {
-
-                /* 4. Insert */
                 $stmt = $conn->prepare(
                     "INSERT INTO lich_trinh 
                     (ma_lich_trinh, id_tau, id_tuyen_duong, ngay_di, ngay_den, trang_thai)
@@ -78,7 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $trang_thai
                 ])) {
                     $success_message = "Thêm lịch trình thành công!";
-                    // reset form
                     $ma_lich_trinh = $id_tau = $id_tuyen_duong = '';
                     $ngay_di = $ngay_den = $trang_thai = '';
                 } else {
@@ -108,7 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             max-width: 850px;
             margin: 50px auto;
             background-color: #7fa9d6;
-            /* gần #81aad3ff */
             padding: 35px;
             border-radius: 16px;
         }

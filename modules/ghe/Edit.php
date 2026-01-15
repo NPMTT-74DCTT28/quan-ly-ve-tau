@@ -12,7 +12,6 @@ if (!$id) {
     exit;
 }
 
-// 1. Lấy thông tin ghế hiện tại
 $stmt_ghe = $conn->prepare("SELECT * FROM ghe WHERE id = ?");
 $stmt_ghe->execute([$id]);
 $ghe = $stmt_ghe->fetch();
@@ -22,14 +21,12 @@ if (!$ghe) {
     exit;
 }
 
-// 2. Lấy danh sách toa
 $toa_list = $conn->query("SELECT toa_tau.id, toa_tau.ma_toa, tau.ten_tau 
                           FROM toa_tau 
                           INNER JOIN tau ON toa_tau.id_tau = tau.id")->fetchAll();
 
 $error_message = '';
 
-// 3. Xử lý lưu thay đổi
 if (isset($_POST['btnEdit'])) {
     $so_ghe = trim($_POST['so_ghe']);
     $id_toa_tau = $_POST['id_toa_tau'];
@@ -38,7 +35,6 @@ if (isset($_POST['btnEdit'])) {
         $error_message = "Vui lòng nhập đầy đủ thông tin!";
     } else {
         try {
-            // Check trùng
             $sql_check = "SELECT id FROM ghe WHERE so_ghe = ? AND id_toa_tau = ? AND id <> ?";
             $stmt_check = $conn->prepare($sql_check);
             $stmt_check->execute([$so_ghe, $id_toa_tau, $id]);

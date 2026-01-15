@@ -9,13 +9,11 @@ $conn = $db->getConnection();
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    // Kiểm tra xem khách hàng có tồn tại không
     $sql_check = "SELECT * FROM khach_hang WHERE id = ?";
     $stmt_check = $conn->prepare($sql_check);
     $stmt_check->execute([$id]);
 
     if ($stmt_check->rowCount() > 0) {
-        // Kiểm tra xem khách hàng có vé nào không
         $sql_check_ve = "SELECT * FROM ve_tau WHERE id_khach_hang = ?";
         $stmt_check_ve = $conn->prepare($sql_check_ve);
         $stmt_check_ve->execute([$id]);
@@ -26,7 +24,6 @@ if (isset($_GET['id'])) {
                 window.location.href = 'index.php';
             </script>";
         } else {
-            // Xóa khách hàng
             $sql_delete = "DELETE FROM khach_hang WHERE id = ?";
             $stmt_delete = $conn->prepare($sql_delete);
 
