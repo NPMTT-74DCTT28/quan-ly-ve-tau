@@ -7,20 +7,17 @@ requireAdmin();
 
 $conn = $db->getConnection();
 
-// Lấy dữ liệu dropdown
 $tau_list = $conn->query("SELECT id, ma_tau, ten_tau FROM tau ORDER BY ma_tau")->fetchAll(PDO::FETCH_ASSOC);
 $loai_toa_list = $conn->query("SELECT id, ten_loai FROM loai_toa ORDER BY ten_loai")->fetchAll(PDO::FETCH_ASSOC);
 
 $error_message = '';
 
-// Kiểm tra ID
 if (!isset($_GET['id'])) {
     header("Location: index.php");
     exit;
 }
 $id = $_GET['id'];
 
-// Lấy dữ liệu hiện tại
 $stmt = $conn->prepare("SELECT * FROM toa_tau WHERE id = ?");
 $stmt->execute([$id]);
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -34,7 +31,6 @@ $ma_toa      = $row['ma_toa'];
 $id_tau      = $row['id_tau'];
 $id_loai_toa = $row['id_loai_toa'];
 
-// Xử lý cập nhật
 if (isset($_POST['btnEdit'])) {
     $ma_toa_new      = trim($_POST['ma_toa']);
     $id_tau_new      = $_POST['id_tau'];
@@ -43,7 +39,6 @@ if (isset($_POST['btnEdit'])) {
     if (empty($ma_toa_new) || empty($id_tau_new) || empty($id_loai_toa_new)) {
         $error_message = "Vui lòng nhập đầy đủ thông tin!";
     } else {
-        // Check trùng: Mã toa + ID Tàu trùng, NHƯNG trừ ID hiện tại ra
         $sql_check = "SELECT COUNT(*) FROM toa_tau WHERE ma_toa = ? AND id_tau = ? AND id <> ?";
         $stmt_check = $conn->prepare($sql_check);
         $stmt_check->execute([$ma_toa_new, $id_tau_new, $id]);

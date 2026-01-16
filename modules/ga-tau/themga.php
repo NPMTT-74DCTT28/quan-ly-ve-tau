@@ -2,23 +2,18 @@
 require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__ . '/../../includes/header.php';
 
-// 1. Khởi tạo kết nối
 $conn = $db->getConnection();
 
-// 2. Xử lý khi người dùng nhấn nút Lưu (btnLuu)
 if (isset($_POST['btnthem'])) {
-    // Lấy dữ liệu từ các ô input
     $ma = $_POST['txtmaga'];
     $ten = $_POST['txttenga'];
     $dc = $_POST['txtdiachi'];
     $tp = $_POST['txtthanhpho'];
 
-    // Câu lệnh INSERT với dấu ?
     $sql = "INSERT INTO ga_tau (ma_ga, ten_ga, dia_chi, thanh_pho) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
 
     try {
-        // Thực thi với mảng tham số tương ứng 4 dấu ?
         $stmt->execute([$ma, $ten, $dc, $tp]);
 
         echo "<script>
@@ -27,7 +22,6 @@ if (isset($_POST['btnthem'])) {
               </script>";
         exit();
     } catch (PDOException $e) {
-        // Trường hợp trùng khóa chính (ma_ga) hoặc lỗi DB
         echo "<script>alert('Lỗi: Không thể thêm ga. Có thể mã ga đã tồn tại!');</script>";
     }
 }

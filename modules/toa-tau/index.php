@@ -7,22 +7,13 @@ requireAdmin();
 
 $conn = $db->getConnection();
 
-/* =========================
-   LẤY DỮ LIỆU DROPDOWN CHO FILTER
-========================= */
 $tau_list = $conn->query("SELECT id, ma_tau, ten_tau FROM tau ORDER BY ma_tau")->fetchAll(PDO::FETCH_ASSOC);
 $loai_toa_list = $conn->query("SELECT id, ten_loai FROM loai_toa ORDER BY ten_loai")->fetchAll(PDO::FETCH_ASSOC);
 
-/* =========================
-   NHẬN GIÁ TRỊ TÌM KIẾM
-========================= */
 $ma_toa      = $_POST['ma_toa'] ?? '';
 $id_tau      = $_POST['id_tau'] ?? '';
 $id_loai_toa = $_POST['id_loai_toa'] ?? '';
 
-/* =========================
-   XÂY DỰNG SQL TÌM KIẾM
-========================= */
 $sql = "SELECT tt.*, t.ma_tau, t.ten_tau, lt.ten_loai 
         FROM toa_tau tt
         LEFT JOIN tau t ON tt.id_tau = t.id
