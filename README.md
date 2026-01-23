@@ -32,7 +32,7 @@ Hướng dẫn chi tiết:
 - Khởi chạy Apache và MySQL trong XAMPP, truy cập `phpmyadmin` bằng trình duyệt bất kỳ, sau đó import file [`quan_ly_ban_ve_tau.sql`](./assets/sql/quan_ly_ban_ve_tau.sql) để nhập cơ sở dữ liệu `quan_ly_ban_ve_tau`. Bạn có thể đổi tên database sau khi import thành công (Lưu ý: Bạn có thể tắt kiểm tra khoá ngoại khi import để không bị báo lỗi xung đột khoá ngoại - do sai thứ tự tạo bảng vì file sql này xuất ra từ MySQL, thứ tự tạo bảng sắp xếp theo alphabet).
 
 - Trong thư mục [`config/`](./config/):
-  + Tạo một bản sao của file [config.php.example](./config/config.php.example), sau đó đổi tên thành `config.php`. Đây là file cấu hình hệ thống, bạn có thể thay đổi thông tin kết nối DB tại file này.
+  + Tạo một bản sao của file [`config.php.example`](./config/config.php.example), sau đó đổi tên thành `config.php`. Đây là file cấu hình hệ thống, bạn có thể thay đổi thông tin kết nối DB tại file này.
 
 - Khởi chạy:
    + Truy cập web bằng đường link mặc định trong file `config.php` hoặc đường link mới của bạn.
