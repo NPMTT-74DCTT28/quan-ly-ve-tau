@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 01, 2026 lúc 10:36 AM
+-- Thời gian đã tạo: Th4 04, 2026 lúc 11:51 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -29,41 +29,39 @@ DELIMITER $$
 --
 DROP PROCEDURE IF EXISTS `sp_DoanhThuBayNgay`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_DoanhThuBayNgay` ()   BEGIN
-    SELECT
-        DATE(ngay_dat) AS ngay,
-        COALESCE(SUM(gia_ve), 0) AS doanh_thu
-    FROM ve_tau
-    WHERE (CURDATE() - DATE(ngay_dat) BETWEEN 0 AND 7) AND trang_thai = 'Đã thanh toán'
-    GROUP BY DATE(ngay_dat)
-    ORDER BY ngay ASC;
+SELECT
+    DATE (ngay_dat) AS ngay, COALESCE (SUM(gia_ve), 0) AS doanh_thu
+FROM ve_tau
+WHERE (CURDATE() - DATE (ngay_dat) BETWEEN 0 AND 7) AND trang_thai = 'Đã thanh toán'
+GROUP BY DATE (ngay_dat)
+ORDER BY ngay ASC;
 END$$
 
 DROP PROCEDURE IF EXISTS `sp_ThongKeDoanhSo`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ThongKeDoanhSo` (IN `p_thang` INT, IN `p_nam` INT)   BEGIN
-    SELECT 
-        nv.ma_nhan_vien,
-        nv.ho_ten,
-        COUNT(vt.id) as so_ve_ban,
-        COALESCE(SUM(vt.gia_ve), 0) as doanh_so
-    FROM nhan_vien nv
-    LEFT JOIN ve_tau vt ON nv.id = vt.id_nhan_vien 
-        AND MONTH(vt.ngay_dat) = p_thang 
-        AND YEAR(vt.ngay_dat) = p_nam
-        AND vt.trang_thai = 'Đã thanh toán'
-    WHERE nv.vai_tro = 'Nhân viên'
-    GROUP BY nv.id
-    ORDER BY doanh_so DESC;
+SELECT nv.ma_nhan_vien,
+       nv.ho_ten,
+       COUNT(vt.id)                as so_ve_ban,
+       COALESCE(SUM(vt.gia_ve), 0) as doanh_so
+FROM nhan_vien nv
+         LEFT JOIN ve_tau vt ON nv.id = vt.id_nhan_vien
+    AND MONTH (vt.ngay_dat) = p_thang
+    AND YEAR (vt.ngay_dat) = p_nam
+    AND vt.trang_thai = 'Đã thanh toán'
+WHERE nv.vai_tro = 'Nhân viên'
+GROUP BY nv.id
+ORDER BY doanh_so DESC;
 END$$
 
 DROP PROCEDURE IF EXISTS `sp_ThongKeDoanhThuTheoNgay`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ThongKeDoanhThuTheoNgay` (IN `p_ngay_bat_dau` DATE, IN `p_ngay_ket_thuc` DATE)   BEGIN
 SELECT
-    DATE(ngay_dat) as ngay, COALESCE(SUM(gia_ve), 0) as doanh_thu, COUNT(id) as so_ve_ban
+    DATE (ngay_dat) as ngay, COALESCE (SUM(gia_ve), 0) as doanh_thu, COUNT(id) as so_ve_ban
 FROM ve_tau
-WHERE DATE(ngay_dat) BETWEEN '2025-01-01'
+WHERE DATE (ngay_dat) BETWEEN '2025-01-01'
   AND '2025-12-31'
   AND trang_thai = 'Đã thanh toán'
-GROUP BY DATE(ngay_dat)
+GROUP BY DATE (ngay_dat)
 ORDER BY ngay ASC;
 END$$
 
