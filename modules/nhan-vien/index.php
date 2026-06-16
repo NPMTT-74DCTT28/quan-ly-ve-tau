@@ -26,7 +26,7 @@ if (!empty($vai_tro)) {
     $params[] = $vai_tro;
 }
 
-$sql .= " ORDER BY id ASC";
+$sql .= " ORDER BY ma_nhan_vien ASC";
 $stmt = $conn->prepare($sql);
 $stmt->execute($params);
 $nhan_viens = $stmt->fetchAll();
@@ -169,7 +169,7 @@ require_once __DIR__ . '/../../includes/header.php';
     <table class="data-table">
         <thead>
             <tr>
-                <th>STT</th>
+                <th>ID</th>
                 <th>Mã NV</th>
                 <th>Họ tên</th>
                 <th>SĐT</th>
