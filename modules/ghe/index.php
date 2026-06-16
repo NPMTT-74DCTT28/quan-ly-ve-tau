@@ -9,14 +9,12 @@ $conn = $db->getConnection();
 
 $so_ghe = isset($_POST['so_ghe']) ? trim($_POST['so_ghe']) : '';
 
-// Xử lý nút Thêm mới nếu dùng form submit (theo phong cách code 1)
 if (isset($_POST['btnAdd'])) {
     header('location:Add.php');
     exit;
 }
 
 try {
-    // 1. Thêm INNER JOIN với bảng tau để lấy ten_tau
     $sql = "SELECT ghe.*, toa_tau.ma_toa, tau.ten_tau 
             FROM ghe 
             INNER JOIN toa_tau ON ghe.id_toa_tau = toa_tau.id 
@@ -25,11 +23,10 @@ try {
     $params = [];
 
     if (!empty($so_ghe)) {
-        // 2. Thêm điều kiện tìm kiếm theo tau.ten_tau
         $sql .= " AND (ghe.so_ghe LIKE ? OR toa_tau.ma_toa LIKE ? OR tau.ten_tau LIKE ?)";
         $params[] = "%$so_ghe%";
         $params[] = "%$so_ghe%";
-        $params[] = "%$so_ghe%"; // Tham số thứ 3 cho tên tàu
+        $params[] = "%$so_ghe%";
     }
 
     $sql .= " ORDER BY ghe.id DESC";

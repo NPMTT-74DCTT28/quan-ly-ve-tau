@@ -22,7 +22,6 @@ if (isset($_GET['ma_ga'])) {
     }
 }
 
-// 2. Xử lý khi nhấn nút "Sửa Ga"
 if (isset($_POST['btnsua'])) {
     $ma  = trim($_POST['txtmaga']); 
     $ten = trim($_POST['txttenga']);

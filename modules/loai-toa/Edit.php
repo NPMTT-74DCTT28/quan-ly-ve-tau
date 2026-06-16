@@ -10,7 +10,6 @@ $conn = $db->getConnection();
 $id = $ten_loai = $he_so_gia = '';
 $error_message = '';
 
-// LẤY THÔNG TIN CŨ
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $sql_select = "SELECT * FROM loai_toa WHERE id = ?";
@@ -30,7 +29,6 @@ if (isset($_GET['id'])) {
     exit;
 }
 
-// XỬ LÝ UPDATE
 if (isset($_POST['btnEdit'])) {
     $id = $_POST['id'];
     $ten_loai = trim($_POST['ten_loai']);
