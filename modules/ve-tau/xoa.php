@@ -20,7 +20,7 @@ if (isset($_GET['id'])) {
 
         // Kiểm tra trạng thái vé trước khi xóa
         // Nếu vé đã xác nhận hoặc hoàn thành, có thể không cho xóa
-        if ($ve_tau['trang_thai'] == 'Đã xác nhận' || $ve_tau['trang_thai'] == 'Hoàn thành') {
+        if ($ve_tau['trang_thai'] == 'Đã thanh toán') {
             echo "<script>
                 alert('Không thể xóa vé đang ở trạng thái \"' + '{$ve_tau['trang_thai']}' + '\"!');
                 window.location.href = 'index.php';

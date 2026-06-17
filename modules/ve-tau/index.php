@@ -84,10 +84,9 @@ $data_search = $stmt->fetchAll();
                     <label style="font-weight: 600; font-size: 14px; margin-bottom: 5px; display: block;">Trạng thái:</label>
                     <select class="form-control" name="trang_thai" style="width: 100%; padding: 6px 10px; border: 1px solid #ced4da; border-radius: 4px;">
                         <option value="">Tất cả</option>
-                        <option value="Đã xác nhận" <?php echo $trang_thai == 'Đã xác nhận' ? 'selected' : ''; ?>>Đã xác nhận</option>
+                        <option value="Đã thanh toán" <?php echo $trang_thai == 'Đã thanh toán' ? 'selected' : ''; ?>>Đã thanh toán</option>
                         <option value="Chờ xác nhận" <?php echo $trang_thai == 'Chờ xác nhận' ? 'selected' : ''; ?>>Chờ xác nhận</option>
                         <option value="Đã hủy" <?php echo $trang_thai == 'Đã hủy' ? 'selected' : ''; ?>>Đã hủy</option>
-                        <option value="Hoàn thành" <?php echo $trang_thai == 'Hoàn thành' ? 'selected' : ''; ?>>Hoàn thành</option>
                     </select>
                 </div>
                 <div style="flex: 1; min-width: 130px;">

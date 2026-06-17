@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
     $id_khach_hang = $_POST['id_khach_hang'];
     $id_lich_trinh = $_POST['id_lich_trinh'];
     $id_ghe = $_POST['id_ghe'] ?? '';
-    $id_nhan_vien = $_POST['id_nhan_vien'];
+    $id_nhan_vien = $_SESSION['user']['id'];
     $gia_ve = $_POST['gia_ve'];
     $trang_thai = $_POST['trang_thai'];
 
@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
             <div class="col-md-6" style="flex: 0 0 50%; max-width: 50%; padding-right: 15px; padding-left: 15px; box-sizing: border-box;">
                 <div class="form-group mb-20">
                     <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Giá vé (VNĐ) (*):</label>
-                    <input type="number" class="form-control" name="gia_ve" id="gia_ve" disabled
+                    <input type="number" class="form-control" name="gia_ve" id="gia_ve" readonly
                         value="<?php echo htmlspecialchars($gia_ve); ?>" required min="0" placeholder="VD: 500000"
                         style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
                 </div>
@@ -158,8 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
                     <select class="form-control" name="trang_thai" required style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
                         <option value="">-- Chọn trạng thái --</option>
                         <option value="Chờ xác nhận" <?php echo $trang_thai == 'Chờ xác nhận' ? 'selected' : ''; ?>>Chờ xác nhận</option>
-                        <option value="Đã xác nhận" <?php echo $trang_thai == 'Đã xác nhận' ? 'selected' : ''; ?>>Đã xác nhận</option>
-                        <option value="Hoàn thành" <?php echo $trang_thai == 'Hoàn thành' ? 'selected' : ''; ?>>Hoàn thành</option>
+                        <option value="Đã thanh toán" <?php echo $trang_thai == 'Đã thanh toán' ? 'selected' : ''; ?>>Đã thanh toán</option>
                         <option value="Đã hủy" <?php echo $trang_thai == 'Đã hủy' ? 'selected' : ''; ?>>Đã hủy</option>
                     </select>
                 </div>

@@ -131,7 +131,8 @@ if (isset($_POST['btnEdit'])) {
             <div class="col-md-6" style="flex: 0 0 50%; max-width: 50%; padding-right: 15px; padding-left: 15px; box-sizing: border-box;">
                 <div class="form-group mb-20">
                     <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Giá vé (VNĐ):</label>
-                    <input type="number" class="form-control" name="gia_ve" value="<?php echo htmlspecialchars($gia_ve); ?>" required min="0"
+                    <input type="number" class="form-control" name="gia_ve" id="gia_ve" readonly
+                        value="<?php echo htmlspecialchars($gia_ve); ?>" required min="0"
                         style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
                 </div>
 
@@ -139,8 +140,7 @@ if (isset($_POST['btnEdit'])) {
                     <label style="font-weight: 600; color: #34495e; display: block; margin-bottom: 5px;">Trạng thái:</label>
                     <select class="form-control" name="trang_thai" required style="width: 100%; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px;">
                         <option value="Chờ xác nhận" <?php echo $trang_thai == 'Chờ xác nhận' ? 'selected' : ''; ?>>Chờ xác nhận</option>
-                        <option value="Đã xác nhận" <?php echo $trang_thai == 'Đã xác nhận' ? 'selected' : ''; ?>>Đã xác nhận</option>
-                        <option value="Hoàn thành" <?php echo $trang_thai == 'Hoàn thành' ? 'selected' : ''; ?>>Hoàn thành</option>
+                        <option value="Đã thanh toán" <?php echo $trang_thai == 'Đã thanh toán' ? 'selected' : ''; ?>>Đã thanh toán</option>
                         <option value="Đã hủy" <?php echo $trang_thai == 'Đã hủy' ? 'selected' : ''; ?>>Đã hủy</option>
                     </select>
                 </div>
@@ -154,7 +154,7 @@ if (isset($_POST['btnEdit'])) {
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <input type="hidden" name="id_lich_trinh" value="<?= $id_lich_trinh ?>">
+                    <input type="hidden" id="id_lich_trinh" name="id_lich_trinh" value="<?= $id_lich_trinh ?>">
                     <small style="color: #666;">(Không thể đổi lịch trình khi sửa vé)</small>
                 </div>
             </div>
@@ -190,6 +190,40 @@ if (isset($_POST['btnEdit'])) {
                     }
                 </style>
             </div>
+            <script>
+document.querySelectorAll('.ghe-item').forEach(item => {
+    item.addEventListener('click', function() {
+        // Tìm input radio chọn ghế bên trong phần tử ghế vừa được click
+        const radioGhe = this.querySelector('input[name="id_ghe"]');
+        if (!radioGhe) return;
+        
+        const idGhe = radioGhe.value;
+        // Lấy ID lịch trình từ thẻ có id="id_lich_trinh"
+        const idLichTrinhEl = document.getElementById('id_lich_trinh');
+        const idLichTrinh = idLichTrinhEl ? idLichTrinhEl.value : '';
+
+        // Nếu có đủ cả ID Ghế và ID Lịch trình thì tiến hành gọi file tính tiền
+        if (idGhe && idLichTrinh) {
+            fetch(`tinhtientudong.php?id_lich_trinh=${idLichTrinh}&id_ghe=${idGhe}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Cập nhật giá tiền mới vào ô nhập giá vé
+                        const giaVeEl = document.getElementById('gia_ve');
+                        if (giaVeEl) {
+                            giaVeEl.value = data.price;
+                        }
+                    } else {
+                        console.log('Không tìm thấy cấu hình giá cho ghế hoặc lịch trình này.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi kết nối hệ thống tính tiền:', error);
+                });
+        }
+    });
+});
+</script>
         </div>
 
         <div style="text-align: center; margin-top: 30px;">
