@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../includes/header.php';
 requireLogin();
 $conn = $db->getConnection();
 
-// Khởi tạo các biến tìm kiếm
 $cccd = isset($_POST['cccd']) ? $_POST['cccd'] : '';
 $ho_ten = isset($_POST['ho_ten']) ? $_POST['ho_ten'] : '';
 $ngay_sinh = isset($_POST['ngay_sinh']) ? $_POST['ngay_sinh'] : '';
@@ -13,7 +12,6 @@ $gioi_tinh = isset($_POST['gioi_tinh']) ? $_POST['gioi_tinh'] : '';
 $sdt = isset($_POST['sdt']) ? $_POST['sdt'] : '';
 $dia_chi = isset($_POST['dia_chi']) ? $_POST['dia_chi'] : '';
 
-// Xử lý tìm kiếm
 $sql = "SELECT * FROM khach_hang WHERE 1=1";
 $params = [];
 
@@ -131,7 +129,7 @@ $data_search = $stmt->fetchAll();
                                 </td>
                                 <td style="text-align: center; vertical-align: middle;">
                                     <?php
-                                    $bg_color = '#6c757d'; // Default grey
+                                    $bg_color = '#6c757d';
                                     if ($row['gioi_tinh'] == 'Nam') $bg_color = '#0d6efd';
                                     if ($row['gioi_tinh'] == 'Nữ') $bg_color = '#d63384';
                                     ?>

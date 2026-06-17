@@ -6,7 +6,6 @@ requireLogin();
 
 $conn = $db->getConnection();
 
-// Lấy danh sách dữ liệu cho dropdowns
 $sql_khach_hang = "SELECT id, ho_ten, sdt FROM khach_hang ORDER BY ho_ten";
 $stmt_khach_hang = $conn->query($sql_khach_hang);
 $khach_hang_list = $stmt_khach_hang->fetchAll();
@@ -15,16 +14,13 @@ $sql_lich_trinh = "SELECT id, ma_lich_trinh, ngay_di FROM lich_trinh WHERE ngay_
 $stmt_lich_trinh = $conn->query($sql_lich_trinh);
 $lich_trinh_list = $stmt_lich_trinh->fetchAll();
 
-// Biến lưu dữ liệu và thông báo
 $ma_ve = $id_khach_hang = $id_lich_trinh = $id_ghe = $id_nhan_vien = $gia_ve = $trang_thai = '';
 $show_success = $show_error = false;
 $success_message = $error_message = '';
 $ghe_list = [];
 
-// Lấy danh sách ghế khi chọn lịch trình (giữ nguyên logic submit form để lấy lại dữ liệu)
 if (isset($_POST['id_lich_trinh']) && !empty($_POST['id_lich_trinh'])) {
     $id_lich_trinh = $_POST['id_lich_trinh'];
-    // Re-populate data if form submitted
     if (isset($_POST['ma_ve'])) $ma_ve = $_POST['ma_ve'];
     if (isset($_POST['gia_ve'])) $gia_ve = $_POST['gia_ve'];
     if (isset($_POST['id_khach_hang'])) $id_khach_hang = $_POST['id_khach_hang'];
@@ -45,9 +41,7 @@ if (isset($_POST['id_lich_trinh']) && !empty($_POST['id_lich_trinh'])) {
     $ghe_list = $stmt_ghe->fetchAll();
 }
 
-// Xử lý khi thêm vé
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
-    // Validate lại các biến
     $ma_ve = $_POST['ma_ve'];
     $id_khach_hang = $_POST['id_khach_hang'];
     $id_lich_trinh = $_POST['id_lich_trinh'];
@@ -60,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
         $error_message = "Vui lòng điền đầy đủ thông tin bắt buộc!";
         $show_error = true;
     } else {
-        // Kiểm tra mã vé
         $sql_check = "SELECT id FROM ve_tau WHERE ma_ve = ?";
         $stmt_check = $conn->prepare($sql_check);
         $stmt_check->execute([$ma_ve]);
@@ -69,7 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
             $error_message = "Mã vé đã tồn tại! Vui lòng nhập mã khác.";
             $show_error = true;
         } else {
-            // Check ghế lần cuối
             $sql_check_ghe = "SELECT id FROM ve_tau WHERE id_lich_trinh = ? AND id_ghe = ? AND trang_thai NOT IN ('Đã hủy')";
             $stmt_check_ghe = $conn->prepare($sql_check_ghe);
             $stmt_check_ghe->execute([$id_lich_trinh, $id_ghe]);
@@ -85,7 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAdd'])) {
                 if ($stmt_insert->execute([$ma_ve, $id_khach_hang, $id_lich_trinh, $id_ghe, $id_nhan_vien, $gia_ve, $trang_thai])) {
                     $success_message = "Thêm vé tàu thành công!";
                     $show_success = true;
-                    // Reset form
                     $ma_ve = $id_khach_hang = $id_lich_trinh = $id_ghe = $id_nhan_vien = $gia_ve = $trang_thai = '';
                     $ghe_list = [];
                 } else {

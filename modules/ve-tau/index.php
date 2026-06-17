@@ -6,7 +6,6 @@ requireLogin();
 
 $conn = $db->getConnection();
 
-// Khởi tạo các biến tìm kiếm
 $ma_ve = $_POST['ma_ve'] ?? '';
 $ten_khach = $_POST['ten_khach'] ?? '';
 $ma_lich_trinh = $_POST['ma_lich_trinh'] ?? '';
@@ -14,7 +13,6 @@ $trang_thai = $_POST['trang_thai'] ?? '';
 $ngay_dat_tu = $_POST['ngay_dat_tu'] ?? '';
 $ngay_dat_den = $_POST['ngay_dat_den'] ?? '';
 
-// Xử lý tìm kiếm
 $sql = "SELECT vt.*, kh.ho_ten as ten_khach_hang, kh.sdt, lt.ma_lich_trinh,
             CONCAT(g.so_ghe, ' (', t.ma_toa, ')') as ten_ghe, nv.ho_ten as ten_nhan_vien
         FROM ve_tau vt

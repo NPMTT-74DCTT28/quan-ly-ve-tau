@@ -8,7 +8,6 @@ $conn = $db->getConnection();
 
 $error_message = '';
 
-// Dropdowns
 $sql_khach_hang = "SELECT id, ho_ten, sdt FROM khach_hang ORDER BY ho_ten";
 $khach_hang_list = $conn->query($sql_khach_hang)->fetchAll();
 
@@ -33,7 +32,6 @@ if (isset($_GET['id'])) {
     $gia_ve = $ve_tau['gia_ve'];
     $trang_thai = $ve_tau['trang_thai'];
 
-    // Logic lấy ghế: Ghế trống + Ghế của chính vé này
     $sql_ghe = "SELECT g.id, g.so_ghe, t.ma_toa 
                 FROM ghe g 
                 JOIN toa_tau t ON g.id_toa_tau = t.id 

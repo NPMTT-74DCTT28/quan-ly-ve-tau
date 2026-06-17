@@ -23,8 +23,8 @@
                     <li><a href="<?php echo BASE_URL ?>modules/toa-tau">Toa tàu</a></li>
                     <li><a href="<?php echo BASE_URL ?>modules/ga-tau">Ga tàu</a></li>
                     <li><a href="<?php echo BASE_URL ?>modules/tuyen-duong">Tuyến đường</a></li>
+                    <li><a href="<?php echo BASE_URL ?>modules/lich-trinh">Lịch trình</a></li>
                 <?php endif ?>
-                <li><a href="<?php echo BASE_URL ?>modules/lich-trinh">Lịch trình</a></li>
                 <li><a href="<?php echo BASE_URL ?>modules/khach-hang">Khách hàng</a></li>
                 <li><a href="<?php echo BASE_URL ?>modules/ve-tau">Vé tàu</a></li>
                 <li class="dropdown-container">

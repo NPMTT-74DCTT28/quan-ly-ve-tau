@@ -3,12 +3,10 @@ require_once __DIR__ . '/../../bootstrap.php';
 require_once __DIR__ . '/../../includes/header.php';
 
 requireLogin();
+requireAdmin();
 
 $conn = $db->getConnection();
 
-/* =========================
-   LẤY DỮ LIỆU DROPDOWN
-========================= */
 $tau_list = $conn->query(
     "SELECT id, ma_tau, ten_tau FROM tau ORDER BY ma_tau"
 )->fetchAll(PDO::FETCH_ASSOC);
@@ -17,9 +15,6 @@ $tuyen_duong_list = $conn->query(
     "SELECT id, ma_tuyen, ten_tuyen FROM tuyen_duong ORDER BY ma_tuyen"
 )->fetchAll(PDO::FETCH_ASSOC);
 
-/* =========================
-   NHẬN GIÁ TRỊ TÌM KIẾM
-========================= */
 $id              = $_POST['id'] ?? '';
 $ma_lich_trinh   = $_POST['ma_lich_trinh'] ?? '';
 $id_tau          = $_POST['id_tau'] ?? '';
@@ -28,9 +23,6 @@ $ngay_di         = $_POST['ngay_di'] ?? '';
 $ngay_den        = $_POST['ngay_den'] ?? '';
 $trang_thai      = $_POST['trang_thai'] ?? '';
 
-/* =========================
-   XÂY DỰNG SQL TÌM KIẾM
-========================= */
 $sql = "SELECT l.*, t.ma_tau, t.ten_tau, td.ma_tuyen, td.ten_tuyen
         FROM lich_trinh l
         LEFT JOIN tau t ON l.id_tau = t.id
@@ -132,7 +124,6 @@ $data_search = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="container">
         <h2 class="text-center mb-4">QUẢN LÝ LỊCH TRÌNH</h2>
 
-        <!-- FORM TÌM KIẾM -->
         <div class="search-form">
             <form method="post">
                 <div class="row g-3">
@@ -184,7 +175,6 @@ $data_search = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </form>
         </div>
 
-        <!-- BẢNG DỮ LIỆU -->
         <div class="table-container">
             <h3 class="text-center mb-3">DANH SÁCH LỊCH TRÌNH</h3>
             <div class="table-responsive">
