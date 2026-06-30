@@ -3,10 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 04, 2026 lúc 11:51 AM
+-- Thời gian đã tạo: Th6 30, 2026 lúc 07:06 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -234,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `khach_hang` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cccd` varchar(20) DEFAULT NULL,
   `ho_ten` varchar(100) NOT NULL,
-  `ngay_sinh` date DEFAULT curdate(),
+  `ngay_sinh` date NOT NULL DEFAULT curdate(),
   `gioi_tinh` varchar(20) NOT NULL,
   `sdt` varchar(20) NOT NULL,
   `dia_chi` varchar(255) NOT NULL,
@@ -595,6 +596,7 @@ ALTER TABLE `ve_tau`
   ADD CONSTRAINT `ve_tau_ibfk_2` FOREIGN KEY (`id_lich_trinh`) REFERENCES `lich_trinh` (`id`),
   ADD CONSTRAINT `ve_tau_ibfk_3` FOREIGN KEY (`id_ghe`) REFERENCES `ghe` (`id`),
   ADD CONSTRAINT `ve_tau_ibfk_4` FOREIGN KEY (`id_nhan_vien`) REFERENCES `nhan_vien` (`id`);
+SET FOREIGN_KEY_CHECKS=1;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
